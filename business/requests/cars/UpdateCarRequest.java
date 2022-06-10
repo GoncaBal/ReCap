@@ -15,5 +15,6 @@ public class UpdateCarRequest {
 	private double kilometer;
 	private int brandId;
 	private int colorId;
+	private int state;
 	
 }

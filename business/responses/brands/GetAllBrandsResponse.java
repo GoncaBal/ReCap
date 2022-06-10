@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReadBrandResponse {
-	private int id;
-	private String name;
-	public ReadBrandResponse(Brand entity) {
-		this.id = entity.getId();
-		this.name = entity.getName();
-	}
+public class GetAllBrandsResponse {
+private int id;
+private String name;
+public GetAllBrandsResponse(Brand entity) {
+	this.id = entity.getId();
+	this.name = entity.getName();
+}
 }

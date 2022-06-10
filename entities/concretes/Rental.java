@@ -16,30 +16,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "maintenances")
-
-public class Maintenance {
+@Table(name = "rentals")
+public class Rental {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-
-	@Column(name = "dateSent")
-	private LocalDate dateSent;
-
-	@Column(name = "dateReturned")
-	private LocalDate dateReturned;
+	@Column(name = "pickUpDate")
+	private LocalDate pickUpDate;
+	@Column(name = "returnDate")
+	private LocalDate returnDate;
+	@Column(name="totalDays")
+	private int totalDays;
+	@Column(name="totalPrice")
+	private double totalPrice;
 	
 	@ManyToOne
 	@JoinColumn(name="car_id")
 	private Car car;
-
-
-
-	
-	
 
 }

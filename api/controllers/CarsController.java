@@ -12,10 +12,10 @@ import com.kodlamaio.rentACar.business.abstracts.CarService;
 import com.kodlamaio.rentACar.business.requests.cars.CreateCarRequest;
 import com.kodlamaio.rentACar.business.requests.cars.DeleteCarRequest;
 import com.kodlamaio.rentACar.business.requests.cars.UpdateCarRequest;
+import com.kodlamaio.rentACar.business.responses.cars.GetAllCarsResponse;
 import com.kodlamaio.rentACar.business.responses.cars.ReadCarResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.Car;
 
 @RestController
 @RequestMapping("/api/cars")
@@ -44,13 +44,13 @@ public class CarsController {
 	}
 	
 	@GetMapping("/getall")
-	public DataResult<List<Car>>  getAll() {
+	public DataResult<List<GetAllCarsResponse>>  getAll() {
 		return this.carService.getAll();
 	}
 	
 	@GetMapping("/getbyid")
-	public DataResult<Car> getById(@RequestBody ReadCarResponse readCarResponse) {
-		return carService.getById(readCarResponse);
+	public DataResult<ReadCarResponse> getById(@RequestBody  int id) {
+		return carService.getById(id);
 	}
 	// 3 nesne için de crud list all getby id 
 }

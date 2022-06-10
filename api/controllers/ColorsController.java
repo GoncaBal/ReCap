@@ -12,9 +12,9 @@ import com.kodlamaio.rentACar.business.abstracts.ColorService;
 import com.kodlamaio.rentACar.business.requests.colors.CreateColorRequest;
 import com.kodlamaio.rentACar.business.requests.colors.DeleteColorRequest;
 import com.kodlamaio.rentACar.business.requests.colors.UpdateColorRequest;
+import com.kodlamaio.rentACar.business.responses.colors.GetAllColorsResponse;
 import com.kodlamaio.rentACar.business.responses.colors.ReadColorResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
-import com.kodlamaio.rentACar.entities.concretes.Color;
 
 @RestController
 @RequestMapping("/api/colors")
@@ -41,12 +41,12 @@ public class ColorsController {
 	}
 
 	@GetMapping("/getall")
-	public DataResult<List<Color>>  getAll() {
+	public DataResult<List<GetAllColorsResponse>>  getAll() {
 		return colorService.getAll();
 	}
 	
 	@GetMapping("/getbyid")
-	public DataResult<Color> getById(@RequestBody ReadColorResponse readColorResponse) {
-		return colorService.getById(readColorResponse);
+	public DataResult<ReadColorResponse> getById(@RequestBody  int id) {
+		return colorService.getById(id);
 	}
 }

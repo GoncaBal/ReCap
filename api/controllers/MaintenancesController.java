@@ -12,10 +12,10 @@ import com.kodlamaio.rentACar.business.abstracts.MaintenanceService;
 import com.kodlamaio.rentACar.business.requests.maintenances.CreateMaintenanceRequest;
 import com.kodlamaio.rentACar.business.requests.maintenances.DeleteMaintenanceRequest;
 import com.kodlamaio.rentACar.business.requests.maintenances.UpdateMaintenanceRequest;
+import com.kodlamaio.rentACar.business.responses.maintenances.GetAllMaintenancesResponse;
 import com.kodlamaio.rentACar.business.responses.maintenances.ReadMaintenanceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.Maintenance;
 
 @RestController
 @RequestMapping("/api/maintenances")
@@ -28,7 +28,7 @@ public class MaintenancesController {
 	}
 
 	@GetMapping("/getall")
-	public DataResult<List<Maintenance>> getAll() {
+	public DataResult<List<GetAllMaintenancesResponse>> getAll() {
 		return this.maintenanceService.getAll();
 	}
 
@@ -48,8 +48,8 @@ public class MaintenancesController {
 	}
 
 	@GetMapping("/getbyid")
-	public DataResult<Maintenance> getbyid(@RequestBody ReadMaintenanceResponse readMaintenanceResponse) {
-		return this.maintenanceService.getById(readMaintenanceResponse);
+	public DataResult<ReadMaintenanceResponse> getbyid(@RequestBody int id) {
+		return this.maintenanceService.getById(id);
 	}
 
 }

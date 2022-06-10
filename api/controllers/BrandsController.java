@@ -12,10 +12,10 @@ import com.kodlamaio.rentACar.business.abstracts.BrandService;
 import com.kodlamaio.rentACar.business.requests.brands.CreateBrandRequest;
 import com.kodlamaio.rentACar.business.requests.brands.DeleteBrandRequest;
 import com.kodlamaio.rentACar.business.requests.brands.UpdateBrandRequest;
+import com.kodlamaio.rentACar.business.responses.brands.GetAllBrandsResponse;
 import com.kodlamaio.rentACar.business.responses.brands.ReadBrandResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.Brand;
 
 @RestController // api formatındaysa ona göre hazırlar. annotation imzaya benzer.
 @RequestMapping("/api/brands")
@@ -48,12 +48,12 @@ public class BrandsController {
 	}
 
 	@GetMapping("/getall")
-	public DataResult<List<Brand>> getAll() {
+	public DataResult<List<GetAllBrandsResponse>> getAll() {
 		return brandService.getAll();
 	}
 
 	@GetMapping("/getbyid")
-	public DataResult<Brand> getById(@RequestBody ReadBrandResponse readBrandResponse) {
-		return brandService.getById(readBrandResponse);
+	public DataResult<ReadBrandResponse> getById(@RequestBody  int id) {
+		return brandService.getById(id);
 	}
 }
