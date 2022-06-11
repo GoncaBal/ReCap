@@ -19,6 +19,7 @@ import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.MaintenanceRepository;
+import com.kodlamaio.rentACar.entities.concretes.Car;
 import com.kodlamaio.rentACar.entities.concretes.Maintenance;
 
 @Service
@@ -40,7 +41,10 @@ public class MaintenanceManager implements MaintenanceService {
 	public Result add(CreateMaintenanceRequest createMaintenanceRequest) {
 	
 		Maintenance maintenance=this.modelMapperService.forRequest().map(createMaintenanceRequest, Maintenance.class);
-
+		Car car = this.carRepository.findById(createMaintenanceRequest.getCarId());
+		car.setId(createMaintenanceRequest.getCarId());
+		car.setState(2);
+		maintenance.setCar(car);
 		
 		this.maintenanceRepository.save(maintenance);
 
