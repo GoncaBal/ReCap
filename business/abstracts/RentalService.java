@@ -9,7 +9,6 @@ import com.kodlamaio.rentACar.business.responses.rentals.GetAllRentalsResponse;
 import com.kodlamaio.rentACar.business.responses.rentals.ReadRentalResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 public interface RentalService {
 	Result add(CreateRentalRequest createRentalRequest);

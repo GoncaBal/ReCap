@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kodlamaio.rentACar.business.abstracts.MaintenanceService;
@@ -48,7 +49,7 @@ public class MaintenancesController {
 	}
 
 	@GetMapping("/getbyid")
-	public DataResult<ReadMaintenanceResponse> getbyid(@RequestBody int id) {
+	public DataResult<ReadMaintenanceResponse> getbyid(@RequestParam int id) {
 		return this.maintenanceService.getById(id);
 	}
 

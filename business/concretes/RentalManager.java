@@ -1,7 +1,5 @@
 package com.kodlamaio.rentACar.business.concretes;
 
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -9,9 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kodlamaio.rentACar.business.abstracts.AdditionalService;
 import com.kodlamaio.rentACar.business.abstracts.RentalService;
-import com.kodlamaio.rentACar.business.requests.cars.CreateCarRequest;
 import com.kodlamaio.rentACar.business.requests.rentals.CreateRentalRequest;
 import com.kodlamaio.rentACar.business.requests.rentals.DeleteRentalRequest;
 import com.kodlamaio.rentACar.business.requests.rentals.UpdateRentalRequest;
@@ -50,14 +46,14 @@ public class RentalManager implements RentalService {
 	public Result add(CreateRentalRequest createRentalRequest) {
 
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
-		Car car = this.carRepository.findById(createRentalRequest.getCarId());
-		Additional additional=this.additionalRepository.findById(createRentalRequest.getAdditionalId());
+		Car car = this.carRepository.getById(createRentalRequest.getCarId());
+		Additional additional = this.additionalRepository.getById(createRentalRequest.getAdditionalId());
 		long time = calculateTotalDay(rental);
 		double totalPrice = car.getDailyPrice() * time;
-		if ((rental.getPickCity().getId())!=(rental.getReturnCity().getId())) {
-			totalPrice=totalPrice+750;
+		if ((rental.getPickCity().getId()) != (rental.getReturnCity().getId())) {
+			totalPrice = totalPrice + 750;
 		}
-		totalPrice=totalPrice+(additional.getAdditionalPrice());
+		totalPrice = totalPrice + (additional.getAdditionalPrice());
 		car.setState(3);
 
 		rental.setTotalPrice(totalPrice);
@@ -69,9 +65,19 @@ public class RentalManager implements RentalService {
 
 	@Override
 	public Result update(UpdateRentalRequest updateRentalRequest) {
-
-
 		Rental rentalToUpdate = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
+		Car car = this.carRepository.getById(updateRentalRequest.getCarId());
+		Additional additional= this.additionalRepository.getById(updateRentalRequest.getAdditionalId());
+		
+		long time = calculateTotalDay(rentalToUpdate);
+		double totalPrice= car.getDailyPrice()*time;
+		if (rentalToUpdate.getPickCity().getId()!=rentalToUpdate.getReturnCity().getId()) {
+			totalPrice= totalPrice+750;			
+		}
+		totalPrice = totalPrice + (additional.getAdditionalPrice());
+		rentalToUpdate.setTotalPrice(totalPrice);
+		rentalToUpdate.setCar(car);
+
 		this.rentalRepository.save(rentalToUpdate);
 		return new SuccessResult("RENTAL.UPDATED");
 
@@ -95,9 +101,10 @@ public class RentalManager implements RentalService {
 
 	@Override
 	public DataResult<ReadRentalResponse> getById(int id) {
-		return new SuccessDataResult<ReadRentalResponse>(
-				this.modelMapperService.forResponse().map(id, ReadRentalResponse.class));
-	
+		Rental rental = this.rentalRepository.getById(id);
+		ReadRentalResponse response = this.modelMapperService.forResponse().map(rental, ReadRentalResponse.class);
+		return new SuccessDataResult<ReadRentalResponse>(response);
+
 	}
 
 	private long calculateTotalDay(Rental rental) {

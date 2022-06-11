@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kodlamaio.rentACar.business.abstracts.RentalService;
@@ -16,7 +17,6 @@ import com.kodlamaio.rentACar.business.responses.rentals.GetAllRentalsResponse;
 import com.kodlamaio.rentACar.business.responses.rentals.ReadRentalResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
-import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @RestController
 @RequestMapping("/api/rentals")
@@ -47,7 +47,7 @@ public DataResult<List<GetAllRentalsResponse>> getAll(){
 	return this.rentalService.getAll();
 }
 @GetMapping("/getbyid")
-public DataResult<ReadRentalResponse> getById(@RequestBody int id){
+public DataResult<ReadRentalResponse> getById(@RequestParam int id){
 	return this.rentalService.getById(id);
 }
 }

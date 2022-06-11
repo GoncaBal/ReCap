@@ -85,9 +85,9 @@ public class CarManager implements CarService {
 
 	@Override
 	public DataResult<ReadCarResponse> getById( int id) {
-		return new SuccessDataResult<ReadCarResponse>(this.modelMapperService.forResponse().map(id, ReadCarResponse.class),
-				"CAR:LISTED");
-
+		Car car = this.carRepository.getById(id);
+		ReadCarResponse response= this.modelMapperService.forResponse().map(car, ReadCarResponse.class);
+		return new SuccessDataResult<ReadCarResponse>(response);
 	}
 
 }

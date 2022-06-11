@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kodlamaio.rentACar.business.abstracts.CarService;
@@ -49,7 +50,7 @@ public class CarsController {
 	}
 	
 	@GetMapping("/getbyid")
-	public DataResult<ReadCarResponse> getById(@RequestBody  int id) {
+	public DataResult<ReadCarResponse> getById(@RequestParam  int id) {
 		return carService.getById(id);
 	}
 	// 3 nesne için de crud list all getby id 

@@ -48,7 +48,7 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public Result delete(DeleteBrandRequest deleteBrandRequest) {
-		brandRepository.delete(brandRepository.findById(deleteBrandRequest.getId()));
+		brandRepository.deleteById(deleteBrandRequest.getId());
 		return new SuccessResult("BRAND.DELETED");
 	}
 

@@ -1,6 +1,5 @@
 package com.kodlamaio.rentACar.business.responses.rentals;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 import com.kodlamaio.rentACar.entities.concretes.Rental;
@@ -22,15 +21,15 @@ public class ReadRentalResponse {
 	private int pickUpCityId;
 	private int returnCityId;
 	private int additionalId;
-//	public ReadRentalResponse(Rental entity) {
-//		this.id = entity.getId();
-//		this.pickUpDate = entity.getPickUpDate();
-//		this.returnDate = entity.getReturnDate();
-//		this.totalDays = entity.getTotalDays();
-//		this.totalPrice = entity.getTotalPrice();
-//		this.carId = entity.getCar().getId();
-//		this.pickUpCityId=entity.getPickCity().getId();
-//		this.returnCityId=entity.getReturnCity().getId();
-//		this.additionalId=entity.getAdditional().getId();
-//	}
+	public ReadRentalResponse(Rental entity) {
+		this.id = entity.getId();
+		this.pickUpDate = entity.getPickUpDate();
+		this.returnDate = entity.getReturnDate();
+		this.totalDays = entity.getTotalDays();
+		this.totalPrice = entity.getTotalPrice();
+		this.carId = entity.getCar().getId();
+		this.pickUpCityId=entity.getPickCity().getId();
+		this.returnCityId=entity.getReturnCity().getId();
+		this.additionalId=entity.getAdditional().getId();
+	}
 }

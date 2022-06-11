@@ -41,7 +41,7 @@ public class MaintenanceManager implements MaintenanceService {
 	public Result add(CreateMaintenanceRequest createMaintenanceRequest) {
 	
 		Maintenance maintenance=this.modelMapperService.forRequest().map(createMaintenanceRequest, Maintenance.class);
-		Car car = this.carRepository.findById(createMaintenanceRequest.getCarId());
+		Car car = this.carRepository.getById(createMaintenanceRequest.getCarId());
 		car.setId(createMaintenanceRequest.getCarId());
 		car.setState(2);
 		maintenance.setCar(car);
@@ -92,8 +92,10 @@ public class MaintenanceManager implements MaintenanceService {
 
 	@Override
 	public DataResult<ReadMaintenanceResponse> getById( int id) {
-		//return new SuccessDataResult<Maintenance>(maintenanceRepository.findById(readMaintenanceResponse.getId()));
-		return new SuccessDataResult<ReadMaintenanceResponse>(this.modelMapperService.forResponse().map(id, ReadMaintenanceResponse.class,"MAINTENANCES.LISTED"));
+		Maintenance maintenance= this.maintenanceRepository.getById(id);
+		ReadMaintenanceResponse response =
+				this.modelMapperService.forResponse().map(maintenance, ReadMaintenanceResponse.class);
+		return new SuccessDataResult<ReadMaintenanceResponse>(response);
 	}
 
 }

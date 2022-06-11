@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.kodlamaio.rentACar.entities.concretes.Brand;
 
 public interface BrandRepository extends JpaRepository<Brand, Integer>{
-	Brand findById(int id);
+	Brand getById(int id);
 }

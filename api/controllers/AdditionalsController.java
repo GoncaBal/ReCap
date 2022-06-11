@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kodlamaio.rentACar.business.abstracts.AdditionalService;
@@ -46,7 +47,7 @@ public DataResult<List<GetAllAdditionalsResponse>> getAll(){
 	return this.additionalService.getAll();
 }
 @GetMapping("/getbyid")
-public DataResult<ReadAdditionalResponse> getById(@RequestBody int id){
+public DataResult<ReadAdditionalResponse> getById(@RequestParam int id){
 	return this.additionalService.getById(id);
 }
 }

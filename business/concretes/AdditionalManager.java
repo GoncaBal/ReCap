@@ -11,8 +11,6 @@ import com.kodlamaio.rentACar.business.requests.additionals.DeleteAdditionalRequ
 import com.kodlamaio.rentACar.business.requests.additionals.UpdateAdditionalRequest;
 import com.kodlamaio.rentACar.business.responses.additionals.GetAllAdditionalsResponse;
 import com.kodlamaio.rentACar.business.responses.additionals.ReadAdditionalResponse;
-import com.kodlamaio.rentACar.business.responses.brands.GetAllBrandsResponse;
-import com.kodlamaio.rentACar.business.responses.brands.ReadBrandResponse;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -20,7 +18,6 @@ import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalRepository;
 import com.kodlamaio.rentACar.entities.concretes.Additional;
-import com.kodlamaio.rentACar.entities.concretes.Brand;
 @Service
 public class AdditionalManager implements AdditionalService{
 	
@@ -60,7 +57,9 @@ public class AdditionalManager implements AdditionalService{
 
 	@Override
 	public DataResult<ReadAdditionalResponse> getById(int id) {
-		return new SuccessDataResult<ReadAdditionalResponse>(this.modelMapperService.forResponse().map(id, ReadAdditionalResponse.class),"ADDITIONAL.LISTED");
+		Additional additional=additionalRepository.getById(id);
+		ReadAdditionalResponse response=this.modelMapperService.forResponse().map(additional, ReadAdditionalResponse.class);
+		return new SuccessDataResult<ReadAdditionalResponse>(response);
 	}
 
 }

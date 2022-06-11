@@ -42,7 +42,7 @@ public class ColorManager implements ColorService{
 
 	@Override
 	public Result delete(DeleteColorRequest deleteColorRequest) {
-	colorRepository.delete(colorRepository.findById(deleteColorRequest.getId()));
+	this.colorRepository.deleteById(deleteColorRequest.getId());
 		return new SuccessResult("COLOR.DELETED");
 	}
 
@@ -60,13 +60,14 @@ public class ColorManager implements ColorService{
 		List<Color> colors=this.colorRepository.findAll();
 		List<GetAllColorsResponse> response= colors.stream().map(color->this.modelMapperService.forResponse().map(color, GetAllColorsResponse.class)).collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllColorsResponse>>(response);
-	//	return new SuccessDataResult<List<Color>>( colorRepository.findAll(),"COLOR.LISTED");
 	}
 
 	@Override
 	public DataResult<ReadColorResponse> getById( int id) {
-		//return new SuccessDataResult<Color>(this.colorRepository.findById(readColorResponse.getId()));
-		return new SuccessDataResult<ReadColorResponse>(this.modelMapperService.forResponse().map(id, ReadColorResponse.class),"COLOR.LISTED");
+
+		Color color = this.colorRepository.getById(id);
+		ReadColorResponse response =this.modelMapperService.forResponse().map(color, ReadColorResponse.class);
+		return new SuccessDataResult<ReadColorResponse>(response);
 	}
 
 }
