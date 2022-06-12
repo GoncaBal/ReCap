@@ -12,6 +12,7 @@ import com.kodlamaio.rentACar.business.requests.colors.DeleteColorRequest;
 import com.kodlamaio.rentACar.business.requests.colors.UpdateColorRequest;
 import com.kodlamaio.rentACar.business.responses.colors.GetAllColorsResponse;
 import com.kodlamaio.rentACar.business.responses.colors.ReadColorResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -33,13 +34,19 @@ public class ColorManager implements ColorService{
 
 	@Override
 	public Result add(CreateColorRequest createColorRequest) {
-//		Color color=new Color();
-//		color.setName(createColorRequest.getName());
+		checkIfColorExistName(createColorRequest.getName());
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		this.colorRepository.save(color);
 		return new SuccessResult("COLOR.ADDED");
 	}
 
+	private void checkIfColorExistName(String name) {
+		Color currentColor=this.colorRepository.findByName(name);
+		if (currentColor!=null) {
+			throw new BusinessException("COLOR.EXIST");
+		}
+	}
+	
 	@Override
 	public Result delete(DeleteColorRequest deleteColorRequest) {
 	this.colorRepository.deleteById(deleteColorRequest.getId());

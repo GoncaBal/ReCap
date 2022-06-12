@@ -20,7 +20,7 @@ public class ReadRentalResponse {
 	private int carId;
 	private int pickUpCityId;
 	private int returnCityId;
-	private int additionalId;
+	private int additionalItemId;
 	public ReadRentalResponse(Rental entity) {
 		this.id = entity.getId();
 		this.pickUpDate = entity.getPickUpDate();
@@ -30,6 +30,6 @@ public class ReadRentalResponse {
 		this.carId = entity.getCar().getId();
 		this.pickUpCityId=entity.getPickCity().getId();
 		this.returnCityId=entity.getReturnCity().getId();
-		this.additionalId=entity.getAdditional().getId();
+		this.additionalItemId=entity.getId();
 	}
 }

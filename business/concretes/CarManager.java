@@ -12,6 +12,7 @@ import com.kodlamaio.rentACar.business.requests.cars.DeleteCarRequest;
 import com.kodlamaio.rentACar.business.requests.cars.UpdateCarRequest;
 import com.kodlamaio.rentACar.business.responses.cars.GetAllCarsResponse;
 import com.kodlamaio.rentACar.business.responses.cars.ReadCarResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.ErrorResult;
@@ -38,26 +39,23 @@ public class CarManager implements CarService {
 	@Override
 	public Result add(CreateCarRequest createCarRequest) {
 
-		if (!checkBrandCount(createCarRequest.getBrandId())) {
+		checkIfBrandCount(createCarRequest.getBrandId());
 
-			Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
-			car.setState(1);
-			
-			this.carRepository.save(car);
-			return new SuccessResult("CAR.ADDED");
-		} else {
-			return new ErrorResult("ERROR:CAR.ADDED");
-		}
+		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
+		car.setState(1);
+
+		this.carRepository.save(car);
+		return new SuccessResult("CAR.ADDED");
 
 	}
 
-	private boolean checkBrandCount(int id) {
+	private void checkIfBrandCount(int id) {
 
 		List<Car> cars = carRepository.getByBrandId(id);
-		if (cars.size() < 5) {
-			return false;
+		if (cars.size() > 4) {
+			throw new BusinessException("ERROR:CAR.ADDED");
 		}
-		return true;
+
 	}
 
 	@Override
@@ -84,9 +82,9 @@ public class CarManager implements CarService {
 	}
 
 	@Override
-	public DataResult<ReadCarResponse> getById( int id) {
+	public DataResult<ReadCarResponse> getById(int id) {
 		Car car = this.carRepository.getById(id);
-		ReadCarResponse response= this.modelMapperService.forResponse().map(car, ReadCarResponse.class);
+		ReadCarResponse response = this.modelMapperService.forResponse().map(car, ReadCarResponse.class);
 		return new SuccessDataResult<ReadCarResponse>(response);
 	}
 

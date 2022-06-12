@@ -12,6 +12,7 @@ import com.kodlamaio.rentACar.business.requests.brands.DeleteBrandRequest;
 import com.kodlamaio.rentACar.business.requests.brands.UpdateBrandRequest;
 import com.kodlamaio.rentACar.business.responses.brands.GetAllBrandsResponse;
 import com.kodlamaio.rentACar.business.responses.brands.ReadBrandResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -34,6 +35,7 @@ public class BrandManager implements BrandService {
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest) {
 		// Mapping yapıldı.
+		checkIfBrandExistByName(createBrandRequest.getName());
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		brandRepository.save(brand);
 		return new SuccessResult("BRAND.ADDED");
@@ -65,4 +67,10 @@ public class BrandManager implements BrandService {
 		return new SuccessDataResult<ReadBrandResponse>(this.modelMapperService.forResponse().map(id, ReadBrandResponse.class),"BRAND.LISTED");
 	}
 
+	private void checkIfBrandExistByName(String name) {
+		Brand currentBrand=this.brandRepository.findByName(name);
+		if (currentBrand!=null) {
+			throw new BusinessException("BRAND.EXIST");
+		}
+	}
 }

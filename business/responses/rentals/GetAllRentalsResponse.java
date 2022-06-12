@@ -30,7 +30,7 @@ public class GetAllRentalsResponse {
 		this.carId=entity.getCar().getId();
 		this.pickUpCityId=entity.getPickCity().getId();
 		this.returnCityId=entity.getReturnCity().getId();
-		this.additionalId=entity.getAdditional().getId();
+		this.additionalId=entity.getId();
 	}
 	
 

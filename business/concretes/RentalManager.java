@@ -22,6 +22,7 @@ import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
 import com.kodlamaio.rentACar.entities.concretes.Additional;
+import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
 import com.kodlamaio.rentACar.entities.concretes.Car;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
@@ -32,7 +33,7 @@ public class RentalManager implements RentalService {
 	CarRepository carRepository;
 	ModelMapperService modelMapperService;
 	AdditionalRepository additionalRepository;
-
+	
 	@Autowired
 	public RentalManager(RentalRepository rentalRepository, ModelMapperService modelMapperService,
 			CarRepository carRepository, AdditionalRepository additionalRepository) {
@@ -47,13 +48,13 @@ public class RentalManager implements RentalService {
 
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
 		Car car = this.carRepository.getById(createRentalRequest.getCarId());
-		Additional additional = this.additionalRepository.getById(createRentalRequest.getAdditionalId());
+	//	AdditionalItem additional = this.additionalRepository.getById(createRentalRequest.getAdditionalId());
 		long time = calculateTotalDay(rental);
 		double totalPrice = car.getDailyPrice() * time;
 		if ((rental.getPickCity().getId()) != (rental.getReturnCity().getId())) {
 			totalPrice = totalPrice + 750;
 		}
-		totalPrice = totalPrice + (additional.getAdditionalPrice());
+//		totalPrice = totalPrice + (additional.getAdditionalPrice());
 		car.setState(3);
 
 		rental.setTotalPrice(totalPrice);
@@ -74,7 +75,7 @@ public class RentalManager implements RentalService {
 		if (rentalToUpdate.getPickCity().getId()!=rentalToUpdate.getReturnCity().getId()) {
 			totalPrice= totalPrice+750;			
 		}
-		totalPrice = totalPrice + (additional.getAdditionalPrice());
+	//	totalPrice = totalPrice + (additional.getAdditionalPrice());
 		rentalToUpdate.setTotalPrice(totalPrice);
 		rentalToUpdate.setCar(car);
 
