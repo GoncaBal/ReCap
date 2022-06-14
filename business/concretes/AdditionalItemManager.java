@@ -12,6 +12,7 @@ import com.kodlamaio.rentACar.business.requests.additionalItems.DeleteAdditional
 import com.kodlamaio.rentACar.business.requests.additionalItems.UpdateAdditionalItemRequest;
 import com.kodlamaio.rentACar.business.responses.additionalItems.GetAllAdditionalItemsResponse;
 import com.kodlamaio.rentACar.business.responses.additionalItems.ReadAdditionalItemsResponse;
+import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -22,18 +23,14 @@ import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
 
 @Service
 public class AdditionalItemManager implements AdditionalItemService {
-
+	@Autowired
 	ModelMapperService modelMapperService;
-	AdditionalItemRepository additionalItemRepository;
-@Autowired
-	public AdditionalItemManager(ModelMapperService modelMapperService,
-			AdditionalItemRepository additionalItemRepository) {
-		this.modelMapperService = modelMapperService;
-		this.additionalItemRepository = additionalItemRepository;
-	}
+	@Autowired
+	private AdditionalItemRepository additionalItemRepository;
 
 	@Override
 	public Result add(CreateAdditionalItemRequest createAdditionalItemRequest) {
+		checkIfAdditionalItemExistByName(createAdditionalItemRequest.getName());
 		AdditionalItem additionalItem = this.modelMapperService.forRequest().map(createAdditionalItemRequest,
 				AdditionalItem.class);
 		this.additionalItemRepository.save(additionalItem);
@@ -71,5 +68,10 @@ public class AdditionalItemManager implements AdditionalItemService {
 				ReadAdditionalItemsResponse.class);
 		return new SuccessDataResult<ReadAdditionalItemsResponse>(response);
 	}
+	private void checkIfAdditionalItemExistByName(String name) {
+		AdditionalItem currentAdditionalItem=this.additionalItemRepository.findByName(name);
+		if (currentAdditionalItem!=null) {
+			throw new BusinessException("ADDITIONAL.ITEM.EXIST");
+		}
 
-}
+}}

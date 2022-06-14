@@ -2,8 +2,6 @@ package com.kodlamaio.rentACar.business.responses.rentals;
 
 import java.util.Date;
 
-import com.kodlamaio.rentACar.entities.concretes.Rental;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,15 +19,5 @@ public class ReadRentalResponse {
 	private int pickUpCityId;
 	private int returnCityId;
 	private int additionalItemId;
-	public ReadRentalResponse(Rental entity) {
-		this.id = entity.getId();
-		this.pickUpDate = entity.getPickUpDate();
-		this.returnDate = entity.getReturnDate();
-		this.totalDays = entity.getTotalDays();
-		this.totalPrice = entity.getTotalPrice();
-		this.carId = entity.getCar().getId();
-		this.pickUpCityId=entity.getPickCity().getId();
-		this.returnCityId=entity.getReturnCity().getId();
-		this.additionalItemId=entity.getId();
-	}
+	
 }

@@ -1,6 +1,11 @@
 package com.kodlamaio.rentACar.business.responses.cars;
 
-import com.kodlamaio.rentACar.entities.concretes.Car;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,24 +15,41 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetAllCarsResponse {
-private int id;
-private String description;
-private double dailyPrice;
-private String carPlate;
-private double kilometer;
-private int brandId;
-private int colorId;
-private int state;
-public GetAllCarsResponse(Car entity) {
-	this.id = entity.getId();
-	this.description = entity.getDescription();
-	this.dailyPrice = entity.getDailyPrice();
-	this.carPlate = entity.getCarPlate();
-	this.kilometer = entity.getKilometer();
-	this.brandId = entity.getBrand().getId();
-	this.colorId = entity.getColor().getId();
-	this.state = entity.getState();
-}
+	private int id;
 
+
+	@NotBlank
+	@NotEmpty
+	@NotNull
+	@Size(min = 2, max = 50)
+	private String description;
+
+	@Min(20)
+	@NotEmpty
+	@NotNull
+	@NotBlank
+	private double dailyPrice;
+
+	@NotEmpty
+	@NotNull
+	@NotBlank
+	@Pattern(regexp = "/^([0-9]{2})([A-Z]{1,3})([0-9]{2,4})$/")
+	private String carPlate;
+
+	@NotEmpty
+	@NotNull
+	@NotBlank
+	@Min(0)
+	private double kilometer;
+
+	@NotEmpty
+	@NotNull
+	@NotBlank
+	private int brandId;
+	@NotEmpty
+	@NotNull
+	@NotBlank
+	private int colorId;
+	private int state;
 
 }

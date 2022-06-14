@@ -2,6 +2,9 @@ package com.kodlamaio.rentACar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,33 +24,37 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RestController
 @RequestMapping("/api/additionals")
 public class AdditionalsController {
-	
-	AdditionalService additionalService;
-	
-public AdditionalsController(AdditionalService additionalService) {
+
+	@Autowired
+	private AdditionalService additionalService;
+
+	public AdditionalsController(AdditionalService additionalService) {
 		this.additionalService = additionalService;
 	}
 
-@PostMapping("/add")
-public Result add(@RequestBody CreateAdditionalRequest createAdditionalRequest) {
-	
-	return this.additionalService.add(createAdditionalRequest);
-}
+	@PostMapping("/add")
+	public Result add(@RequestBody @Valid CreateAdditionalRequest createAdditionalRequest) {
 
-@PostMapping("/update")
-public Result update(@RequestBody UpdateAdditionalRequest updateAdditionalRequest) {
-	return this.additionalService.update(updateAdditionalRequest);
-}
-@PostMapping("/delete")
-public Result delete(@RequestBody DeleteAdditionalRequest deleteAdditionalRequest) {
-return this.additionalService.delete(deleteAdditionalRequest);	
-}
-@GetMapping("/getall")
-public DataResult<List<GetAllAdditionalsResponse>> getAll(){
-	return this.additionalService.getAll();
-}
-@GetMapping("/getbyid")
-public DataResult<ReadAdditionalResponse> getById(@RequestParam int id){
-	return this.additionalService.getById(id);
-}
+		return this.additionalService.add(createAdditionalRequest);
+	}
+
+	@PostMapping("/update")
+	public Result update(@RequestBody @Valid UpdateAdditionalRequest updateAdditionalRequest) {
+		return this.additionalService.update(updateAdditionalRequest);
+	}
+
+	@PostMapping("/delete")
+	public Result delete(@RequestBody @Valid DeleteAdditionalRequest deleteAdditionalRequest) {
+		return this.additionalService.delete(deleteAdditionalRequest);
+	}
+
+	@GetMapping("/getall")
+	public DataResult<List<GetAllAdditionalsResponse>> getAll() {
+		return this.additionalService.getAll();
+	}
+
+	@GetMapping("/getbyid")
+	public DataResult<ReadAdditionalResponse> getById(@RequestParam @Valid int id) {
+		return this.additionalService.getById(id);
+	}
 }

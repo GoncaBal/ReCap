@@ -10,7 +10,6 @@ import com.kodlamaio.rentACar.business.abstracts.AdditionalService;
 import com.kodlamaio.rentACar.business.requests.additionals.CreateAdditionalRequest;
 import com.kodlamaio.rentACar.business.requests.additionals.DeleteAdditionalRequest;
 import com.kodlamaio.rentACar.business.requests.additionals.UpdateAdditionalRequest;
-import com.kodlamaio.rentACar.business.responses.additionalItems.GetAllAdditionalItemsResponse;
 import com.kodlamaio.rentACar.business.responses.additionals.GetAllAdditionalsResponse;
 import com.kodlamaio.rentACar.business.responses.additionals.ReadAdditionalResponse;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
@@ -20,19 +19,13 @@ import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalRepository;
 import com.kodlamaio.rentACar.entities.concretes.Additional;
-import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
 @Service
 public class AdditionalManager implements AdditionalService{
-
-	ModelMapperService modelMapperService;
-	AdditionalRepository additionalRepository;
-	
 	@Autowired
-	public AdditionalManager(ModelMapperService modelMapperService, AdditionalRepository additionalRepository) {
-		this.modelMapperService = modelMapperService;
-		this.additionalRepository = additionalRepository;
-	}
-
+	ModelMapperService modelMapperService;
+	@Autowired
+	private AdditionalRepository additionalRepository;
+	
 	@Override
 	public Result add(CreateAdditionalRequest createAdditionalItemRequest) {
 		Additional additional=this.modelMapperService.forRequest().map(createAdditionalItemRequest, Additional.class);

@@ -2,6 +2,9 @@ package com.kodlamaio.rentACar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,32 +23,34 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 
 @RestController
 @RequestMapping("/api/additionalitems")
+
 public class AdditionalItemsController {
-	
-	AdditionalItemService additionalItemService;
-	
-public AdditionalItemsController(AdditionalItemService additionalItemService) {
-	
-		this.additionalItemService = additionalItemService;
+
+	@Autowired
+	private AdditionalItemService additionalItemService;
+
+	@PostMapping("/add")
+	public Result add(@RequestBody @Valid CreateAdditionalItemRequest createAdditionalItemRequest) {
+		return this.additionalItemService.add(createAdditionalItemRequest);
 	}
-@PostMapping("/add")
-public Result add(@RequestBody CreateAdditionalItemRequest createAdditionalItemRequest) {
-	 return this.additionalItemService.add(createAdditionalItemRequest);
-}
-@PostMapping("/update")
-public Result update(@RequestBody UpdateAdditionalItemRequest updateAdditionalItemRequest) {
-	return this.additionalItemService.update(updateAdditionalItemRequest);
-}
-@PostMapping("/delete")
-public Result delete(@RequestBody DeleteAdditionalItemRequest deleteAdditionalItemRequest) {
-	return this.additionalItemService.delete(deleteAdditionalItemRequest);
-}
-@GetMapping("/getall")
-public DataResult<List<GetAllAdditionalItemsResponse>> getAll(){
-	return this.additionalItemService.getAll();
-}
-@GetMapping("/getbyid")
-public DataResult<ReadAdditionalItemsResponse> getById(@RequestParam int id){
-	return this.additionalItemService.getById(id);
-}
+
+	@PostMapping("/update")
+	public Result update(@RequestBody @Valid UpdateAdditionalItemRequest updateAdditionalItemRequest) {
+		return this.additionalItemService.update(updateAdditionalItemRequest);
+	}
+
+	@PostMapping("/delete")
+	public Result delete(@RequestBody @Valid DeleteAdditionalItemRequest deleteAdditionalItemRequest) {
+		return this.additionalItemService.delete(deleteAdditionalItemRequest);
+	}
+
+	@GetMapping("/getall")
+	public DataResult<List<GetAllAdditionalItemsResponse>> getAll() {
+		return this.additionalItemService.getAll();
+	}
+
+	@GetMapping("/getbyid")
+	public DataResult<ReadAdditionalItemsResponse> getById(@RequestParam @Valid int id) {
+		return this.additionalItemService.getById(id);
+	}
 }

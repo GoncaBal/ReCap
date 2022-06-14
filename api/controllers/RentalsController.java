@@ -2,6 +2,9 @@ package com.kodlamaio.rentACar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,32 +25,31 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RequestMapping("/api/rentals")
 public class RentalsController {
 	
+	@Autowired
 	private RentalService rentalService;
-	
-public RentalsController(RentalService rentalService) {
-		super();
-		this.rentalService = rentalService;
+
+	@PostMapping("/add")
+	public Result add(@RequestBody @Valid CreateRentalRequest createRentalRequest) {
+		return this.rentalService.add(createRentalRequest);
 	}
 
-@PostMapping("/add")
-public Result add(@RequestBody CreateRentalRequest createRentalRequest) {
-	return this.rentalService.add(createRentalRequest);
-}
-@PostMapping("/update")
-public Result update(@RequestBody UpdateRentalRequest updateRentalRequest) {
-	return this.rentalService.update(updateRentalRequest);
-}
-@PostMapping("/delete")
-public Result delete(@RequestBody DeleteRentalRequest deleteRentalRequest) {
-	return this.rentalService.delete(deleteRentalRequest);
-}
+	@PostMapping("/update")
+	public Result update(@RequestBody @Valid UpdateRentalRequest updateRentalRequest) {
+		return this.rentalService.update(updateRentalRequest);
+	}
 
-@GetMapping("/getall")
-public DataResult<List<GetAllRentalsResponse>> getAll(){
-	return this.rentalService.getAll();
-}
-@GetMapping("/getbyid")
-public DataResult<ReadRentalResponse> getById(@RequestParam int id){
-	return this.rentalService.getById(id);
-}
+	@PostMapping("/delete")
+	public Result delete(@RequestBody @Valid DeleteRentalRequest deleteRentalRequest) {
+		return this.rentalService.delete(deleteRentalRequest);
+	}
+
+	@GetMapping("/getall")
+	public DataResult<List<GetAllRentalsResponse>> getAll() {
+		return this.rentalService.getAll();
+	}
+
+	@GetMapping("/getbyid")
+	public DataResult<ReadRentalResponse> getById(@RequestParam @Valid int id) {
+		return this.rentalService.getById(id);
+	}
 }

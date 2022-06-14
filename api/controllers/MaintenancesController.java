@@ -2,6 +2,9 @@ package com.kodlamaio.rentACar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,11 +25,8 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RequestMapping("/api/maintenances")
 public class MaintenancesController {
 
+	@Autowired
 	private MaintenanceService maintenanceService;
-
-	public MaintenancesController(MaintenanceService maintenanceService) {
-		this.maintenanceService = maintenanceService;
-	}
 
 	@GetMapping("/getall")
 	public DataResult<List<GetAllMaintenancesResponse>> getAll() {
@@ -34,22 +34,22 @@ public class MaintenancesController {
 	}
 
 	@PostMapping("/add")
-	public Result add(@RequestBody CreateMaintenanceRequest createMaintenanceRequest) {
+	public Result add(@RequestBody @Valid CreateMaintenanceRequest createMaintenanceRequest) {
 		return this.maintenanceService.add(createMaintenanceRequest);
 	}
 
 	@PostMapping("/update")
-	public Result update(@RequestBody UpdateMaintenanceRequest updateMaintenanceRequest) {
+	public Result update(@RequestBody @Valid UpdateMaintenanceRequest updateMaintenanceRequest) {
 		return this.maintenanceService.update(updateMaintenanceRequest);
 	}
 
 	@PostMapping("/delete")
-	public Result delete(@RequestBody DeleteMaintenanceRequest deleteMaintenanceRequest) {
+	public Result delete(@RequestBody @Valid DeleteMaintenanceRequest deleteMaintenanceRequest) {
 		return this.maintenanceService.delete(deleteMaintenanceRequest);
 	}
 
 	@GetMapping("/getbyid")
-	public DataResult<ReadMaintenanceResponse> getbyid(@RequestParam int id) {
+	public DataResult<ReadMaintenanceResponse> getbyid(@RequestParam @Valid int id) {
 		return this.maintenanceService.getById(id);
 	}
 
