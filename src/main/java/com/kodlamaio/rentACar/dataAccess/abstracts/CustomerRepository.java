@@ -6,5 +6,5 @@ import com.kodlamaio.rentACar.entities.concretes.Customer;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 	Customer getById(int id);
-	Customer findByName(String name);
+	Customer findByeMail(String mail);
 }

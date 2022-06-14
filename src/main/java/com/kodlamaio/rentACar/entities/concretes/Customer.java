@@ -27,6 +27,8 @@ public class Customer {
 	private String lastName;
 	@Column(name="nationalIdentification")
 	private String nationalIdentification;
+	@Column(name="birthYear")
+	private int birthYear;
 	@Column(name="eMail")
 	private String eMail;
 	@Column(name="password")

@@ -16,6 +16,8 @@ public class ReadCustomerResponse {
 
 	private String nationalIdentification;
 
+	private int birthYear;
+	
 	private String eMail;
 
 	private String password;

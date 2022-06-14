@@ -1,5 +1,6 @@
 package com.kodlamaio.rentACar.api.controllers;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -29,7 +30,7 @@ public class CustomersController {
 	private CustomerService customerService;
 
 	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) {
+	public Result add(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) throws NumberFormatException, RemoteException {
 		return this.customerService.add(createCustomerRequest);
 	}
 
@@ -52,8 +53,8 @@ public class CustomersController {
 	public DataResult<ReadCustomerResponse> getById(@RequestParam @Valid int id) {
 		return this.customerService.getById(id);
 	}
-	@GetMapping("getallbypage")
-	DataResult<List<GetAllCustomersResponse>> getAll(@RequestParam @Valid int pageNumber, int pageSize){
+	@GetMapping("/getallbypage")
+	DataResult<List<GetAllCustomersResponse>> getAll(@RequestParam int pageNumber, int pageSize){
 		return this.customerService.getAll(pageNumber,pageSize);
 	}
 }

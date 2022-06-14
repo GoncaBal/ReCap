@@ -29,6 +29,8 @@ public class CreateCustomerRequest {
 	@NotNull
 	@Pattern(regexp = "[0-9]{11}", message = "Length must be 11")
 	private String nationalIdentification;
+
+	private int birthYear;
 	@NotBlank
 	@NotNull
 	@Pattern(regexp = "^(?=.{1,64}@)[\\p{L}0-9_-]+(\\.[\\p{L}0-9_-]+)*@" 
@@ -36,6 +38,6 @@ public class CreateCustomerRequest {
 	private String eMail;
 	@NotBlank
 	@NotNull
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$", message = "Conditions do not meet")
+	//@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$", message = "Conditions do not meet")
 	private String password;
 }

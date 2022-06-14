@@ -1,5 +1,6 @@
 package com.kodlamaio.rentACar.business.concretes;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.CustomerService;
+import com.kodlamaio.rentACar.business.abstracts.PersonCheckService;
 import com.kodlamaio.rentACar.business.requests.customers.CreateCustomerRequest;
 import com.kodlamaio.rentACar.business.requests.customers.DeleteCustomerRequest;
 import com.kodlamaio.rentACar.business.requests.customers.UpdateCustomerRequest;
@@ -17,6 +19,7 @@ import com.kodlamaio.rentACar.business.responses.customers.ReadCustomerResponse;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
+import com.kodlamaio.rentACar.core.utilities.results.ErrorResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
@@ -30,15 +33,23 @@ public class CustomerManager implements CustomerService{
 	private CustomerRepository customerRepository;
 	@Autowired
 	private ModelMapperService modelMapperService;
-	
+	@Autowired
+	private PersonCheckService personCheckService;
 	
 
 	@Override
-	public Result add(CreateCustomerRequest createCustomerRequest) {
-		checkIfCustomerExistByName(createCustomerRequest.getEMail());
+	public Result add(CreateCustomerRequest createCustomerRequest) throws NumberFormatException, RemoteException {
+		checkIfCustomerExistByeMail(createCustomerRequest.getEMail());
 		Customer customer= this.modelMapperService.forRequest().map(createCustomerRequest, Customer.class);
-		this.customerRepository.save(customer);
-		return new SuccessResult("CUSTOMER.ADDED");
+	
+		if (personCheckService.checkIfRealPerson(createCustomerRequest)) {
+			
+			this.customerRepository.save(customer);
+			return new SuccessResult("CUSTOMER.ADDED");
+		}else {
+			return new ErrorResult("NOT.A.VALID.PERSON");
+		}
+		
 	}
 
 	@Override
@@ -76,10 +87,10 @@ public class CustomerManager implements CustomerService{
 				.map(customer, GetAllCustomersResponse.class)).collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllCustomersResponse>>(response);
 	}
-	private void checkIfCustomerExistByName(String name) {
-		Customer currentCustomer=this.customerRepository.findByName(name);
+	private void checkIfCustomerExistByeMail(String mail) {
+		Customer currentCustomer=this.customerRepository.findByeMail(mail);
 		if (currentCustomer!=null) {
-			throw new BusinessException("CUSTOMER.EXIST");
+			throw new BusinessException("CUSTOMER.MAIL.EXIST");
 		}
 
 }
