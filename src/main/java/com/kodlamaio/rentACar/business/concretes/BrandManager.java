@@ -23,18 +23,15 @@ import com.kodlamaio.rentACar.entities.concretes.Brand;
 
 @Service
 public class BrandManager implements BrandService {
+	@Autowired 
 	private BrandRepository brandRepository;
+	@Autowired
 	private ModelMapperService modelMapperService;
 
-	@Autowired // Bu anotasyonla repository'e gidip newleyip bana gönder demek.
-	public BrandManager(BrandRepository brandRepository, ModelMapperService modelMapperService) {
-		this.brandRepository = brandRepository;
-		this.modelMapperService = modelMapperService;
-	}
-
+	
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest) {
-		// Mapping yapıldı.
+
 		checkIfBrandExistByName(createBrandRequest.getName());
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		brandRepository.save(brand);

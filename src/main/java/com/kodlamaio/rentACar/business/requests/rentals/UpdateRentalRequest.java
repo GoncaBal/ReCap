@@ -1,7 +1,8 @@
 package com.kodlamaio.rentACar.business.requests.rentals;
 
-import java.time.LocalDate;
 import java.util.Date;
+
+import javax.validation.constraints.Min;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,9 @@ public class UpdateRentalRequest {
 	private int id;
 	private Date pickUpDate;
 	private Date returnDate;
+	@Min(0)
 	private int totalDays;
+	@Min(0)
 	private double totalPrice;
 	private int carId;
 	private int pickUpCityId;

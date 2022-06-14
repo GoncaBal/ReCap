@@ -2,6 +2,9 @@ package com.kodlamaio.rentACar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,34 +23,32 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 @RestController
 @RequestMapping("/api/colors")
 public class ColorsController {
+	
+	@Autowired
 	private ColorService colorService;
 
-	public ColorsController(ColorService colorService) {
-		this.colorService = colorService;
-	}
-
 	@PostMapping("/add")
-	public void add(@RequestBody CreateColorRequest createColorRequest) {
+	public void add(@RequestBody @Valid CreateColorRequest createColorRequest) {
 		this.colorService.add(createColorRequest);
 	}
 
 	@PostMapping("/delete")
-	public void delete(@RequestBody DeleteColorRequest deleteColorRequest) {
+	public void delete(@RequestBody @Valid DeleteColorRequest deleteColorRequest) {
 		this.colorService.delete(deleteColorRequest);
 	}
 
 	@PostMapping("/update")
-	public void update(@RequestBody UpdateColorRequest updateColorRequest) {
+	public void update(@RequestBody @Valid UpdateColorRequest updateColorRequest) {
 		this.colorService.update(updateColorRequest);
 	}
 
 	@GetMapping("/getall")
 	public DataResult<List<GetAllColorsResponse>>  getAll() {
-		return colorService.getAll();
+		return this.colorService.getAll();
 	}
 	
 	@GetMapping("/getbyid")
-	public DataResult<ReadColorResponse> getById(@RequestParam  int id) {
-		return colorService.getById(id);
+	public DataResult<ReadColorResponse> getById(@RequestParam @Valid  int id) {
+		return this.colorService.getById(id);
 	}
 }

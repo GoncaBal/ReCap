@@ -2,6 +2,9 @@ package com.kodlamaio.rentACar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,25 +25,22 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RequestMapping("/api/cars")
 public class CarsController {
 
-	CarService carService;
+	@Autowired
+	private CarService carService;
 
-	public CarsController(CarService carService) {
-		this.carService = carService;
-	}
-	
 	@PostMapping("/add")
-	public Result add(@RequestBody CreateCarRequest createCarRequest) {
+	public Result add(@RequestBody @Valid CreateCarRequest createCarRequest) {
 		return this.carService.add(createCarRequest); 
 		
 	}
 	
 	@PostMapping("/update")
-	public void update(@RequestBody UpdateCarRequest updateCarRequest) {
+	public void update(@RequestBody @Valid UpdateCarRequest updateCarRequest) {
 		this.carService.update(updateCarRequest);
 	}
 	
 	@PostMapping("/delete")
-	public void delete(@RequestBody DeleteCarRequest deleteCarRequest) {
+	public void delete(@RequestBody @Valid DeleteCarRequest deleteCarRequest) {
 		this.carService.delete(deleteCarRequest);
 	}
 	
@@ -50,7 +50,7 @@ public class CarsController {
 	}
 	
 	@GetMapping("/getbyid")
-	public DataResult<ReadCarResponse> getById(@RequestParam  int id) {
+	public DataResult<ReadCarResponse> getById(@RequestParam @Valid int id) {
 		return carService.getById(id);
 	}
 	// 3 nesne için de crud list all getby id 

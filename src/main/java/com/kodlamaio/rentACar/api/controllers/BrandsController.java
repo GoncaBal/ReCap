@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,16 +21,14 @@ import com.kodlamaio.rentACar.business.responses.brands.ReadBrandResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 
-@RestController // api formatındaysa ona göre hazırlar. annotation imzaya benzer.
+@RestController
 @RequestMapping("/api/brands")
 public class BrandsController {
+	
+	@Autowired
 	private BrandService brandService;
 
-	public BrandsController(BrandService brandService) {
-		this.brandService = brandService;
-	}
-
-	@GetMapping("/sayhello") // endpoint
+	@GetMapping("/sayhello")
 	public String sayHello() {
 		return "Hello spring";
 	}
@@ -41,12 +40,12 @@ public class BrandsController {
 	}
 
 	@PostMapping("/update")
-	public Result update(@RequestBody UpdateBrandRequest updateBrandRequest) {
+	public Result update(@RequestBody @Valid UpdateBrandRequest updateBrandRequest) {
 		return this.brandService.update(updateBrandRequest);
 	}
 
 	@PostMapping("/delete")
-	public Result delete(@RequestBody DeleteBrandRequest deleteBrandRequest) {
+	public Result delete(@RequestBody @Valid DeleteBrandRequest deleteBrandRequest) {
 		return this.brandService.delete(deleteBrandRequest);
 	}
 
@@ -56,7 +55,7 @@ public class BrandsController {
 	}
 
 	@GetMapping("/getbyid")
-	public DataResult<ReadBrandResponse> getById(@RequestParam  int id) {
+	public DataResult<ReadBrandResponse> getById(@RequestParam @Valid int id) {
 		return brandService.getById(id);
 	}
 }

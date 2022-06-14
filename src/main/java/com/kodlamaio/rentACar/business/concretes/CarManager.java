@@ -15,26 +15,19 @@ import com.kodlamaio.rentACar.business.responses.cars.ReadCarResponse;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
-import com.kodlamaio.rentACar.core.utilities.results.ErrorResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
 import com.kodlamaio.rentACar.entities.concretes.Car;
 
-// ctrl + shift + o kullanılmayan satırları siler.
+
 @Service
 public class CarManager implements CarService {
-
-	private CarRepository carRepository;
-	private ModelMapperService modelMapperService;
-
 	@Autowired
-	public CarManager(CarRepository carRepository, ModelMapperService modelMapperService) {
-		this.carRepository = carRepository;
-		this.modelMapperService = modelMapperService;
-
-	}
+	private CarRepository carRepository;
+	@Autowired
+	private ModelMapperService modelMapperService;
 
 	@Override
 	public Result add(CreateCarRequest createCarRequest) {

@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReadAdditionalResponse {
 	private int id;
-
-	private String name;
-
-	private double additionalPrice;
+	private int additionalItemId;
+	private int rentalId;
 }

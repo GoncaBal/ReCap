@@ -1,6 +1,5 @@
 package com.kodlamaio.rentACar.core.utilities.results;
 
-
 public class SuccessDataResult<T> extends DataResult<T> {
 
 	public SuccessDataResult(T data, String message) {
@@ -18,5 +17,7 @@ public class SuccessDataResult<T> extends DataResult<T> {
 	public SuccessDataResult() {
 		super(null, true);
 	}
+
+	
 
 }
