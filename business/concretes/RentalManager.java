@@ -20,8 +20,6 @@ import com.kodlamaio.rentACar.core.utilities.results.ErrorResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
-import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalItemRepository;
-import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CustomerRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
@@ -37,10 +35,6 @@ public class RentalManager implements RentalService {
 	CarRepository carRepository;
 	@Autowired
 	ModelMapperService modelMapperService;
-	@Autowired
-	AdditionalRepository additionalRepository;
-	@Autowired
-	AdditionalItemRepository additionalItemRepository;
 	@Autowired
 	FindeksScoreCheckService findeksScoreCheckService;
 	@Autowired
