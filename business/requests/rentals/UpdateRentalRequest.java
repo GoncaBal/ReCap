@@ -23,4 +23,5 @@ public class UpdateRentalRequest {
 	private int pickUpCityId;
 	private int returnCityId;
 	private int additionalId;
+	private int customerId;
 }

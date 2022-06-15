@@ -16,7 +16,6 @@ import com.kodlamaio.rentACar.business.requests.customers.DeleteCustomerRequest;
 import com.kodlamaio.rentACar.business.requests.customers.UpdateCustomerRequest;
 import com.kodlamaio.rentACar.business.responses.customers.GetAllCustomersResponse;
 import com.kodlamaio.rentACar.business.responses.customers.ReadCustomerResponse;
-import com.kodlamaio.rentACar.core.utilities.adapters.concretes.MernisServiceAdapter;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
@@ -40,9 +39,11 @@ public class CustomerManager implements CustomerService {
 	@Override
 	public Result add(CreateCustomerRequest createCustomerRequest) throws NumberFormatException, RemoteException {
 		checkIfCustomerExistByeMail(createCustomerRequest.getEMail());
+
 		Customer customer = this.modelMapperService.forRequest().map(createCustomerRequest, Customer.class);
 
 		if (personCheckService.checkIfRealPerson(createCustomerRequest)) {
+
 			this.customerRepository.save(customer);
 			return new SuccessResult("CUSTOMER.ADDED");
 		} else {
@@ -81,7 +82,7 @@ public class CustomerManager implements CustomerService {
 	}
 
 	@Override
-	public DataResult<List<GetAllCustomersResponse>> getAll(Integer pageNumber, Integer pageSize) {
+	public DataResult<List<GetAllCustomersResponse>> getAll(int pageNumber, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 		List<Customer> users = this.customerRepository.findAll(pageable).getContent();
 		List<GetAllCustomersResponse> response = users.stream()
@@ -91,11 +92,16 @@ public class CustomerManager implements CustomerService {
 	}
 
 	private void checkIfCustomerExistByeMail(String mail) {
-		Customer currentCustomer=this.customerRepository.findByeMail(mail);
-		if (currentCustomer!=null) {
+		Customer currentCustomer = this.customerRepository.findByeMail(mail);
+		if (currentCustomer != null) {
 			throw new BusinessException("CUSTOMER.MAIL.EXIST");
 		}
 
-	
-}
+//		private void checkIfExistNationalIdentification(String identity) {
+//			Customer currentCustomerIdentity= this.customerRepository.findByNationalityIdentification(identity);
+//			if (currentCustomerIdentity!=null) {
+//				throw new BusinessException(identity);
+//			}
+		// }
+	}
 }

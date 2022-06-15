@@ -39,5 +39,8 @@ public class CreateCustomerRequest {
 	@NotBlank
 	@NotNull
 	//@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$", message = "Conditions do not meet")
+	//en az bir büyük harf, bir küçük harf ve sayıdan oluşan parola için
 	private String password;
+	
+	private int minFindeksScore;
 }

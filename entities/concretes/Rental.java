@@ -54,4 +54,8 @@ public class Rental {
 	@ManyToOne
 	@JoinColumn(name="returnCity_id")
 	private City returnCity;
+	
+	@ManyToOne
+	@JoinColumn(name="customer_id")
+	private Customer customer;
 }
