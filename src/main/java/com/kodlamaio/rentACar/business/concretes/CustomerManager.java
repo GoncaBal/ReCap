@@ -27,34 +27,34 @@ import com.kodlamaio.rentACar.dataAccess.abstracts.CustomerRepository;
 import com.kodlamaio.rentACar.entities.concretes.Customer;
 
 @Service
-public class CustomerManager implements CustomerService{
-	
+public class CustomerManager implements CustomerService {
+
 	@Autowired
 	private CustomerRepository customerRepository;
 	@Autowired
 	private ModelMapperService modelMapperService;
 	@Autowired
 	private PersonCheckService personCheckService;
-	
 
 	@Override
 	public Result add(CreateCustomerRequest createCustomerRequest) throws NumberFormatException, RemoteException {
 		checkIfCustomerExistByeMail(createCustomerRequest.getEMail());
-		Customer customer= this.modelMapperService.forRequest().map(createCustomerRequest, Customer.class);
-	
+
+		Customer customer = this.modelMapperService.forRequest().map(createCustomerRequest, Customer.class);
+
 		if (personCheckService.checkIfRealPerson(createCustomerRequest)) {
-			
+
 			this.customerRepository.save(customer);
 			return new SuccessResult("CUSTOMER.ADDED");
-		}else {
+		} else {
 			return new ErrorResult("NOT.A.VALID.PERSON");
 		}
-		
+
 	}
 
 	@Override
 	public Result update(UpdateCustomerRequest updateCustomerRequest) {
-		Customer customerToUpdate= this.modelMapperService.forRequest().map(updateCustomerRequest, Customer.class);
+		Customer customerToUpdate = this.modelMapperService.forRequest().map(updateCustomerRequest, Customer.class);
 		this.customerRepository.save(customerToUpdate);
 		return new SuccessResult("CUSTOMER.UPDATED");
 	}
@@ -67,8 +67,10 @@ public class CustomerManager implements CustomerService{
 
 	@Override
 	public DataResult<List<GetAllCustomersResponse>> getAll() {
-		List<Customer> customers=this.customerRepository.findAll();
-		List<GetAllCustomersResponse> response= customers.stream().map(customer->this.modelMapperService.forResponse().map(customer, GetAllCustomersResponse.class)).collect(Collectors.toList());
+		List<Customer> customers = this.customerRepository.findAll();
+		List<GetAllCustomersResponse> response = customers.stream()
+				.map(customer -> this.modelMapperService.forResponse().map(customer, GetAllCustomersResponse.class))
+				.collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllCustomersResponse>>(response);
 	}
 
@@ -80,18 +82,26 @@ public class CustomerManager implements CustomerService{
 	}
 
 	@Override
-	public DataResult<List<GetAllCustomersResponse>> getAll(Integer pageNumber, Integer pageSize) {
-		Pageable pageable= PageRequest.of(pageNumber-1, pageSize);
+	public DataResult<List<GetAllCustomersResponse>> getAll(int pageNumber, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 		List<Customer> users = this.customerRepository.findAll(pageable).getContent();
-		List<GetAllCustomersResponse> response = users.stream().map(customer -> this.modelMapperService.forResponse()
-				.map(customer, GetAllCustomersResponse.class)).collect(Collectors.toList());
+		List<GetAllCustomersResponse> response = users.stream()
+				.map(customer -> this.modelMapperService.forResponse().map(customer, GetAllCustomersResponse.class))
+				.collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllCustomersResponse>>(response);
 	}
+
 	private void checkIfCustomerExistByeMail(String mail) {
-		Customer currentCustomer=this.customerRepository.findByeMail(mail);
-		if (currentCustomer!=null) {
+		Customer currentCustomer = this.customerRepository.findByeMail(mail);
+		if (currentCustomer != null) {
 			throw new BusinessException("CUSTOMER.MAIL.EXIST");
 		}
 
-}
+//		private void checkIfExistNationalIdentification(String identity) {
+//			Customer currentCustomerIdentity= this.customerRepository.findByNationalityIdentification(identity);
+//			if (currentCustomerIdentity!=null) {
+//				throw new BusinessException(identity);
+//			}
+		// }
+	}
 }

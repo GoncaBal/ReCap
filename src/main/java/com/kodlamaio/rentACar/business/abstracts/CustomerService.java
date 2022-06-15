@@ -20,7 +20,7 @@ public interface CustomerService {
 
 	DataResult<List<GetAllCustomersResponse>> getAll();
 
-	DataResult<List<GetAllCustomersResponse>> getAll(Integer pageNumber, Integer pageSize);
+	DataResult<List<GetAllCustomersResponse>> getAll(int pageNumber, int pageSize);
 
 	DataResult<ReadCustomerResponse> getById(int id);
 }

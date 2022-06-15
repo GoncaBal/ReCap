@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kodlamaio.rentACar.business.abstracts.FindeksScoreCheckService;
 import com.kodlamaio.rentACar.business.abstracts.RentalService;
 import com.kodlamaio.rentACar.business.requests.rentals.CreateRentalRequest;
 import com.kodlamaio.rentACar.business.requests.rentals.DeleteRentalRequest;
@@ -15,14 +16,17 @@ import com.kodlamaio.rentACar.business.responses.rentals.GetAllRentalsResponse;
 import com.kodlamaio.rentACar.business.responses.rentals.ReadRentalResponse;
 import com.kodlamaio.rentACar.core.utilities.mapping.ModelMapperService;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
+import com.kodlamaio.rentACar.core.utilities.results.ErrorResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalItemRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
+import com.kodlamaio.rentACar.dataAccess.abstracts.CustomerRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
 import com.kodlamaio.rentACar.entities.concretes.Car;
+import com.kodlamaio.rentACar.entities.concretes.Customer;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @Service
@@ -37,12 +41,18 @@ public class RentalManager implements RentalService {
 	AdditionalRepository additionalRepository;
 	@Autowired
 	AdditionalItemRepository additionalItemRepository;
+	@Autowired
+	FindeksScoreCheckService findeksScoreCheckService;
+	@Autowired
+	CustomerRepository customerRepository;
 
 	@Override
 	public Result add(CreateRentalRequest createRentalRequest) {
 
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
 		Car car = this.carRepository.getById(createRentalRequest.getCarId());
+		Customer customer=this.customerRepository.getById(createRentalRequest.getCustomerId());
+		if (checkFindeksMinValue(car.getMinFindeksScore(), customer.getNationalIdentification())) {
 		car.setState(3);
 		long time = calculateTotalDay(rental);
 		double totalPrice = car.getDailyPrice() * time;
@@ -55,6 +65,9 @@ public class RentalManager implements RentalService {
 
 		this.rentalRepository.save(rental);
 		return new SuccessResult("RENTAL.ADDED");
+		}else {
+			return new ErrorResult("INSUFFICIENT.FINDEKS.POINTS.");
+		}
 	}
 
 	@Override
@@ -104,6 +117,16 @@ public class RentalManager implements RentalService {
 		long time = TimeUnit.DAYS.convert(dayDifference, TimeUnit.MILLISECONDS);
 		rental.setTotalDays((int) time);
 		return time;
+	}
+
+	private boolean checkFindeksMinValue(int score, String nationalityIdentification) {
+		boolean state = false;
+		if (findeksScoreCheckService.checkFindeksScore(nationalityIdentification) > score) {
+			state = true;
+		} else {
+			state = false;
+		}
+		return state;
 	}
 
 }
