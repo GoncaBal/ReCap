@@ -1,7 +1,5 @@
 package com.kodlamaio.rentACar.entities.concretes;
 
-
-
 import java.util.Date;
 import java.util.List;
 
@@ -33,29 +31,30 @@ public class Rental {
 	private Date pickUpDate;
 	@Column(name = "returnDate")
 	private Date returnDate;
-	@Column(name="totalDays")
+	@Column(name = "totalDays")
 	private int totalDays;
-	@Column(name="totalPrice")
+	@Column(name = "totalPrice")
 	private double totalPrice;
-	
-	
-	@ManyToOne
-	@JoinColumn(name="car_id")
-	private Car car;
-	
-	@OneToMany(mappedBy = "rental")
-	private List<Additional> additionals;
-	
 
 	@ManyToOne
-	@JoinColumn(name="pickUpCity_id")
+	@JoinColumn(name = "car_id")
+	private Car car;
+
+	@OneToMany(mappedBy = "rental")
+	private List<Additional> additionals;
+
+	@ManyToOne
+	@JoinColumn(name = "pickUpCity_id")
 	private City pickCity;
-	
+
 	@ManyToOne
-	@JoinColumn(name="returnCity_id")
+	@JoinColumn(name = "returnCity_id")
 	private City returnCity;
-	
+
 	@ManyToOne
-	@JoinColumn(name="customer_id")
+	@JoinColumn(name = "customer_id")
 	private Customer customer;
+	
+	@OneToMany(mappedBy = "rental")
+	private List<Invoice> invoinces;
 }
