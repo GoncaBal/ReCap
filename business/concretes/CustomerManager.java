@@ -38,6 +38,7 @@ public class CustomerManager implements CustomerService {
 
 	@Override
 	public Result add(CreateCustomerRequest createCustomerRequest) throws NumberFormatException, RemoteException {
+		
 		checkIfCustomerExistByeMail(createCustomerRequest.getEMail());
 
 		Customer customer = this.modelMapperService.forRequest().map(createCustomerRequest, Customer.class);
@@ -84,8 +85,8 @@ public class CustomerManager implements CustomerService {
 	@Override
 	public DataResult<List<GetAllCustomersResponse>> getAll(int pageNumber, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-		List<Customer> users = this.customerRepository.findAll(pageable).getContent();
-		List<GetAllCustomersResponse> response = users.stream()
+		List<Customer> customers = this.customerRepository.findAll(pageable).getContent();
+		List<GetAllCustomersResponse> response = customers.stream()
 				.map(customer -> this.modelMapperService.forResponse().map(customer, GetAllCustomersResponse.class))
 				.collect(Collectors.toList());
 		return new SuccessDataResult<List<GetAllCustomersResponse>>(response);
@@ -97,11 +98,5 @@ public class CustomerManager implements CustomerService {
 			throw new BusinessException("CUSTOMER.MAIL.EXIST");
 		}
 
-//		private void checkIfExistNationalIdentification(String identity) {
-//			Customer currentCustomerIdentity= this.customerRepository.findByNationalityIdentification(identity);
-//			if (currentCustomerIdentity!=null) {
-//				throw new BusinessException(identity);
-//			}
-		// }
 	}
 }
