@@ -37,4 +37,5 @@ public class AdditionalItem {
 
 	@OneToMany(mappedBy = "additionalItem")
 	private List<Additional> additionals;
+
 }

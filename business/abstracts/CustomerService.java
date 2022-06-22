@@ -22,5 +22,5 @@ public interface CustomerService {
 
 	DataResult<List<GetAllCustomersResponse>> getAll(int pageNumber, int pageSize);
 
-	DataResult<ReadCustomerResponse> getById(int id);
+	DataResult<ReadCustomerResponse> getById(int id); 
 }

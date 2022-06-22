@@ -18,6 +18,7 @@ public class MernisServiceAdapter implements PersonCheckService {
 		return kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(createCustomerRequest.getNationalIdentification()),
 				createCustomerRequest.getFirstName().toUpperCase(), createCustomerRequest.getLastName().toUpperCase(), createCustomerRequest.getBirthYear());
 
+
 	}
 
 }
