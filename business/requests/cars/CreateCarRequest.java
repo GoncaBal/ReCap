@@ -27,7 +27,7 @@ public class CreateCarRequest {
 	@Min(20)
 	@NotEmpty
 	@NotNull
-	@NotBlank
+	
 	private double dailyPrice;
 	
 	@NotEmpty
@@ -50,5 +50,6 @@ public class CreateCarRequest {
 	@NotBlank
 	private int colorId;
 	private int state;
+	private int minFindeksScore;
 	
 }

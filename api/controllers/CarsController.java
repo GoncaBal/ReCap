@@ -29,7 +29,7 @@ public class CarsController {
 	private CarService carService;
 
 	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateCarRequest createCarRequest) {
+	public Result add(@RequestBody  CreateCarRequest createCarRequest) {
 		return this.carService.add(createCarRequest); 
 		
 	}
