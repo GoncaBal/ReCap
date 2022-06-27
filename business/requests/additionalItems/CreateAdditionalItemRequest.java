@@ -1,5 +1,6 @@
 package com.kodlamaio.rentACar.business.requests.additionalItems;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateAdditionalItemRequest {
-	private int id;
+
 	@NotBlank
 	@NotNull
 	@Size(min=3,max=50,message="Must be at least three characters.")
@@ -21,5 +22,6 @@ public class CreateAdditionalItemRequest {
 	@NotNull
 	@Size(min=3,max=150,message="Must be at least three characters.")
 	private String description;
+	@Min(20)
 	private double additionalPrice;
 }

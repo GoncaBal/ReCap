@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,17 +24,20 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RequestMapping("/api/rentals")
 public class RentalsController {
 	
-	@Autowired
 	private RentalService rentalService;
+
+	public RentalsController(RentalService rentalService) {
+		this.rentalService = rentalService;
+	}
 
 	@PostMapping("/add")
 	public Result add(@RequestBody @Valid CreateRentalRequest createRentalRequest) {
-		return this.rentalService.add(createRentalRequest);
+		return this.rentalService.addIndividualCustomerforRental(createRentalRequest);
 	}
 
 	@PostMapping("/update")
 	public Result update(@RequestBody @Valid UpdateRentalRequest updateRentalRequest) {
-		return this.rentalService.update(updateRentalRequest);
+		return this.rentalService.updateIndividualCustomerforRental(updateRentalRequest);
 	}
 
 	@PostMapping("/delete")

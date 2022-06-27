@@ -3,7 +3,6 @@ package com.kodlamaio.rentACar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.BrandService;
@@ -23,15 +22,12 @@ import com.kodlamaio.rentACar.entities.concretes.Brand;
 
 @Service
 public class BrandManager implements BrandService {
-	@Autowired 
+	 
 	private BrandRepository brandRepository;
-	@Autowired
 	private ModelMapperService modelMapperService;
 
-	
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest) {
-
 		checkIfBrandExistByName(createBrandRequest.getName());
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		brandRepository.save(brand);
@@ -40,6 +36,8 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) {
+		checkIfExistBrandId(updateBrandRequest.getId());
+		checkIfBrandExistByName(updateBrandRequest.getName());
 		Brand brandToUpdate = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
 		this.brandRepository.save(brandToUpdate);
 		return new SuccessResult("BRAND.UPDATED");
@@ -47,6 +45,7 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public Result delete(DeleteBrandRequest deleteBrandRequest) {
+		checkIfExistBrandId(deleteBrandRequest.getId());
 		brandRepository.deleteById(deleteBrandRequest.getId());
 		return new SuccessResult("BRAND.DELETED");
 	}
@@ -60,7 +59,7 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public DataResult<ReadBrandResponse> getById(int id) {
-		
+		checkIfExistBrandId(id);
 		return new SuccessDataResult<ReadBrandResponse>(this.modelMapperService.forResponse().map(id, ReadBrandResponse.class),"BRAND.LISTED");
 	}
 
@@ -68,6 +67,13 @@ public class BrandManager implements BrandService {
 		Brand currentBrand=this.brandRepository.findByName(name);
 		if (currentBrand!=null) {
 			throw new BusinessException("BRAND.EXIST");
+		}
+	}
+	
+	private void checkIfExistBrandId(int id) {
+		Brand currentBrand=this.brandRepository.findById(id);
+		if (currentBrand==null) {
+			throw new BusinessException("INVALID.BRAND.ID");
 		}
 	}
 }

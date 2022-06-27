@@ -11,7 +11,7 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 
 public interface CarService {
-	
+
 	Result add(CreateCarRequest createCarRequest);
 
 	Result update(UpdateCarRequest updateCarRequest);

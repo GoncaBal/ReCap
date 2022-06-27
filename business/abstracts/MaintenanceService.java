@@ -11,9 +11,14 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 
 public interface MaintenanceService {
+
 	Result add(CreateMaintenanceRequest createMaintenanceRequest);
+
 	Result update(UpdateMaintenanceRequest updateMaintenanceRequest);
+
 	Result delete(DeleteMaintenanceRequest deleteMaintenanceRequest);
+
 	DataResult<List<GetAllMaintenancesResponse>> getAll();
+
 	DataResult<ReadMaintenanceResponse> getById(int id);
 }

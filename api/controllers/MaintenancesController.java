@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +24,10 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RequestMapping("/api/maintenances")
 public class MaintenancesController {
 
-	@Autowired
 	private MaintenanceService maintenanceService;
 
-	@GetMapping("/getall")
-	public DataResult<List<GetAllMaintenancesResponse>> getAll() {
-		return this.maintenanceService.getAll();
+	public MaintenancesController(MaintenanceService maintenanceService) {
+		this.maintenanceService = maintenanceService;
 	}
 
 	@PostMapping("/add")
@@ -46,6 +43,11 @@ public class MaintenancesController {
 	@PostMapping("/delete")
 	public Result delete(@RequestBody @Valid DeleteMaintenanceRequest deleteMaintenanceRequest) {
 		return this.maintenanceService.delete(deleteMaintenanceRequest);
+	}
+
+	@GetMapping("/getall")
+	public DataResult<List<GetAllMaintenancesResponse>> getAll() {
+		return this.maintenanceService.getAll();
 	}
 
 	@GetMapping("/getbyid")

@@ -30,7 +30,7 @@ public class Invoice {
 	@Column(name="invoiceDate")
 	private Date invoiceDate;
 	@Column(name="state")
-	private boolean state;
+	private int state;
 	@Column(name="TotalPrice")
 	private double TotalPrice;
 	@ManyToOne

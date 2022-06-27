@@ -15,41 +15,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateCarRequest {
-	
-	private int id;
-	
 	@NotBlank
 	@NotEmpty
 	@NotNull
-	@Size(min=2,max=50)
+	@Size(min = 3, max = 50,message="must be at least three characters.")
 	private String description;
 	
 	@Min(20)
-	@NotEmpty
 	@NotNull
-	
 	private double dailyPrice;
 	
-	@NotEmpty
+	@Pattern(regexp = "/^([0-9]{2})([A-Z]{1,3})([0-9]{2,4})$/")
 	@NotNull
-	@NotBlank
-	@Pattern(regexp="/^([0-9]{2})([A-Z]{1,3})([0-9]{2,4})$/")
 	private String carPlate;
 	
-	@NotEmpty
 	@NotNull
-	@NotBlank
 	private double kilometer;
-
-	@NotEmpty
-	@NotNull
-	@NotBlank
-	private int brandId;
-	@NotEmpty
-	@NotNull
-	@NotBlank
-	private int colorId;
-	private int state;
-	private int minFindeksScore;
 	
+	@NotNull
+	private int brandId;
+
+	@NotNull
+	private int colorId;
+	
+	@Min(500)
+	@NotNull
+	private int minFindeksScore;
+
 }

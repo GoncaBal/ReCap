@@ -23,30 +23,46 @@ import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
 
 @Service
 public class AdditionalItemManager implements AdditionalItemService {
-	@Autowired
-	ModelMapperService modelMapperService;
-	@Autowired
+
+	private ModelMapperService modelMapperService;
 	private AdditionalItemRepository additionalItemRepository;
+
+	@Autowired
+	public AdditionalItemManager(ModelMapperService modelMapperService,
+			AdditionalItemRepository additionalItemRepository) {
+
+		this.modelMapperService = modelMapperService;
+		this.additionalItemRepository = additionalItemRepository;
+	}
 
 	@Override
 	public Result add(CreateAdditionalItemRequest createAdditionalItemRequest) {
 		checkIfAdditionalItemExistByName(createAdditionalItemRequest.getName());
+		
 		AdditionalItem additionalItem = this.modelMapperService.forRequest().map(createAdditionalItemRequest,
 				AdditionalItem.class);
+		
 		this.additionalItemRepository.save(additionalItem);
 		return new SuccessResult("ADDITIONAL.ITEM.ADDED");
 	}
 
 	@Override
 	public Result update(UpdateAdditionalItemRequest updateAdditionalItemRequest) {
+		
+		checkIfExistAdditionalItemId(updateAdditionalItemRequest.getId());
+		checkIfAdditionalItemExistByName(updateAdditionalItemRequest.getName());
+		
 		AdditionalItem additionalItemToUpdate = this.modelMapperService.forRequest().map(updateAdditionalItemRequest,
 				AdditionalItem.class);
+		
 		this.additionalItemRepository.save(additionalItemToUpdate);
 		return new SuccessResult("ADDITIONAL.ITEM.UPDATED");
 	}
 
 	@Override
 	public Result delete(DeleteAdditionalItemRequest deleteAdditionalItemRequest) {
+		checkIfExistAdditionalItemId(deleteAdditionalItemRequest.getId());
+		
 		this.additionalItemRepository.deleteById(deleteAdditionalItemRequest.getId());
 		return new SuccessResult("ADDITIONAL.ITEM.DELETED");
 	}
@@ -63,15 +79,25 @@ public class AdditionalItemManager implements AdditionalItemService {
 
 	@Override
 	public DataResult<ReadAdditionalItemsResponse> getById(int id) {
-		AdditionalItem additionalItem = this.additionalItemRepository.getById(id);
+		checkIfExistAdditionalItemId(id);
+		
+		AdditionalItem additionalItem = this.additionalItemRepository.findById(id);
 		ReadAdditionalItemsResponse response = this.modelMapperService.forResponse().map(additionalItem,
 				ReadAdditionalItemsResponse.class);
 		return new SuccessDataResult<ReadAdditionalItemsResponse>(response);
 	}
+
 	private void checkIfAdditionalItemExistByName(String name) {
-		AdditionalItem currentAdditionalItem=this.additionalItemRepository.findByName(name);
-		if (currentAdditionalItem!=null) {
+		AdditionalItem currentAdditionalItem = this.additionalItemRepository.findByName(name);
+		if (currentAdditionalItem != null) {
 			throw new BusinessException("ADDITIONAL.ITEM.EXIST");
 		}
 
-}}
+	}
+	private void checkIfExistAdditionalItemId(int id) {
+		AdditionalItem currentAdditionalItem=this.additionalItemRepository.findById(id);
+		if (currentAdditionalItem==null) {
+			throw new BusinessException("INVALID.ADDITIONAL.ITEM.ID");
+		}
+	}
+}

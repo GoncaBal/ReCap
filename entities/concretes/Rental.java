@@ -35,26 +35,21 @@ public class Rental {
 	private int totalDays;
 	@Column(name = "totalPrice")
 	private double totalPrice;
-
+	@OneToMany(mappedBy = "rental")
+	private List<OrderedAdditionalItems> additionals;
+	@OneToMany(mappedBy = "rental")
+	private List<Invoice> invoinces;
 	@ManyToOne
 	@JoinColumn(name = "car_id")
 	private Car car;
-
-	@OneToMany(mappedBy = "rental")
-	private List<Additional> additionals;
-
 	@ManyToOne
 	@JoinColumn(name = "pickUpCity_id")
 	private City pickCity;
-
 	@ManyToOne
 	@JoinColumn(name = "returnCity_id")
 	private City returnCity;
-
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
-	
-	@OneToMany(mappedBy = "rental")
-	private List<Invoice> invoinces;
+
 }

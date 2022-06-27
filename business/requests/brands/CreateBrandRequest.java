@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateBrandRequest {
-	private int id;
 	@NotBlank
 	@NotNull
 	@Size(min=3,max=50,message="Must be at least three characters.")

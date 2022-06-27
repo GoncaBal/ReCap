@@ -20,7 +20,7 @@ public class GetAllInvoicesResponse {
 	private int additionalId;
 	private String carPlate;
 	private double totalPrice;
-	private boolean state;
+	private int state;
 	private String firstName;
 	private Date returnDate;
 	private Date pickUpDate;

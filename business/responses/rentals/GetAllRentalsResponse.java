@@ -17,7 +17,6 @@ public class GetAllRentalsResponse {
 	private int carId;
 	private int pickUpCityId;
 	private int returnCityId;
-	private int additionalId;
 
 	
 

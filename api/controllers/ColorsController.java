@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +23,11 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 @RequestMapping("/api/colors")
 public class ColorsController {
 	
-	@Autowired
 	private ColorService colorService;
+
+	public ColorsController(ColorService colorService) {
+		this.colorService = colorService;
+	}
 
 	@PostMapping("/add")
 	public void add(@RequestBody @Valid CreateColorRequest createColorRequest) {

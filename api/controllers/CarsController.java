@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,23 +24,26 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RequestMapping("/api/cars")
 public class CarsController {
 
-	@Autowired
 	private CarService carService;
 
+	public CarsController(CarService carService) {
+		this.carService = carService;
+	}
+
 	@PostMapping("/add")
-	public Result add(@RequestBody  CreateCarRequest createCarRequest) {
+	public Result add(@RequestBody @Valid CreateCarRequest createCarRequest) {
 		return this.carService.add(createCarRequest); 
 		
 	}
 	
 	@PostMapping("/update")
-	public void update(@RequestBody @Valid UpdateCarRequest updateCarRequest) {
-		this.carService.update(updateCarRequest);
+	public Result update(@RequestBody @Valid UpdateCarRequest updateCarRequest) {
+		return this.carService.update(updateCarRequest);
 	}
 	
 	@PostMapping("/delete")
-	public void delete(@RequestBody @Valid DeleteCarRequest deleteCarRequest) {
-		this.carService.delete(deleteCarRequest);
+	public Result delete(@RequestBody @Valid DeleteCarRequest deleteCarRequest) {
+		return this.carService.delete(deleteCarRequest);
 	}
 	
 	@GetMapping("/getall")
@@ -53,5 +55,4 @@ public class CarsController {
 	public DataResult<ReadCarResponse> getById(@RequestParam @Valid int id) {
 		return carService.getById(id);
 	}
-	// 3 nesne için de crud list all getby id 
 }

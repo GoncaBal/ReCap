@@ -11,9 +11,14 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
 
 public interface InvoiceService {
+
 	Result add(CreateInvoiceRequest createInvoiceRequest);
+
 	Result delete(DeleteInvoiceRequest deleteInvoiceRequest);
+
 	DataResult<List<GetAllInvoicesResponse>> getAll();
+
 	DataResult<ReadInvoiceResponse> getById(int id);
+
 	DataResult<List<AdditionalItem>> getAllAdditionalItem(int rentalId);
 }

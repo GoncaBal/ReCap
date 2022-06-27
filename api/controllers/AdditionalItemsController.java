@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +25,11 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 
 public class AdditionalItemsController {
 
-	@Autowired
 	private AdditionalItemService additionalItemService;
+
+	public AdditionalItemsController(AdditionalItemService additionalItemService) {
+		this.additionalItemService = additionalItemService;
+	}
 
 	@PostMapping("/add")
 	public Result add(@RequestBody @Valid CreateAdditionalItemRequest createAdditionalItemRequest) {

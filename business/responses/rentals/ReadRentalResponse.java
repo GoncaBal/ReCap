@@ -18,6 +18,5 @@ public class ReadRentalResponse {
 	private int carId;
 	private int pickUpCityId;
 	private int returnCityId;
-	private int additionalItemId;
 	
 }

@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.InvoiceService;
 import com.kodlamaio.rentACar.business.requests.invoices.CreateInvoiceRequest;
 import com.kodlamaio.rentACar.business.requests.invoices.DeleteInvoiceRequest;
-import com.kodlamaio.rentACar.business.responses.additionalItems.GetAllAdditionalItemsResponse;
 import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesResponse;
 import com.kodlamaio.rentACar.business.responses.invoices.ReadInvoiceResponse;
 import com.kodlamaio.rentACar.core.utilities.exceptions.BusinessException;
@@ -20,47 +18,47 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
 import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalItemRepository;
-import com.kodlamaio.rentACar.dataAccess.abstracts.AdditionalRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.InvoiceRepository;
+import com.kodlamaio.rentACar.dataAccess.abstracts.OrderedAdditionalItemsRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
-import com.kodlamaio.rentACar.entities.concretes.Additional;
 import com.kodlamaio.rentACar.entities.concretes.AdditionalItem;
-import com.kodlamaio.rentACar.entities.concretes.Brand;
 import com.kodlamaio.rentACar.entities.concretes.Invoice;
+import com.kodlamaio.rentACar.entities.concretes.OrderedAdditionalItems;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @Service
 public class InvoiceManager implements InvoiceService {
 
-	@Autowired
-	ModelMapperService modelMapperService;
-	@Autowired
-	InvoiceRepository invoiceRepository;
-	@Autowired
-	AdditionalItemRepository additionalItemRepository;
-	@Autowired
-	AdditionalRepository additionalRepository;
-	@Autowired
-	RentalRepository rentalRepository;
+	private ModelMapperService modelMapperService;
+	private InvoiceRepository invoiceRepository;
+	private AdditionalItemRepository additionalItemRepository;
+	private OrderedAdditionalItemsRepository orderedAdditionalItemsRepository;
+	private RentalRepository rentalRepository;
 	
-
+	public InvoiceManager(ModelMapperService modelMapperService, InvoiceRepository invoiceRepository,
+			AdditionalItemRepository additionalItemRepository,
+			OrderedAdditionalItemsRepository orderedAdditionalItemsRepository, RentalRepository rentalRepository) {
+		this.modelMapperService = modelMapperService;
+		this.invoiceRepository = invoiceRepository;
+		this.additionalItemRepository = additionalItemRepository;
+		this.orderedAdditionalItemsRepository = orderedAdditionalItemsRepository;
+		this.rentalRepository = rentalRepository;
+	}
 	@Override
 	public Result add(CreateInvoiceRequest createInvoiceRequest) {
 		checkIfInvoiceExistByInvoiceNumber(createInvoiceRequest.getInvoiceNumber());
 		checkIfRentalExistByRentalId(createInvoiceRequest.getRentalId());
 		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
-		invoice.setState(true);
-		invoice.setTotalPrice(calculateTotalPrice(createInvoiceRequest.getRentalId()));
+		invoice.setState(1);
+		calculateTotalPrice(createInvoiceRequest.getRentalId(),invoice);
 		this.invoiceRepository.save(invoice);
 		return new SuccessResult("INVOICE.ADDED");
 	}
 
-	
-
 	@Override
 	public Result delete(DeleteInvoiceRequest deleteInvoiceRequest) {
 		Invoice invoice=this.modelMapperService.forRequest().map(deleteInvoiceRequest, Invoice.class);
-		invoice.setState(false);
+		invoice.setState(2);
 		return new SuccessResult("INVOICE.CANCELLED");
 	}
 
@@ -73,52 +71,53 @@ public class InvoiceManager implements InvoiceService {
 		return new SuccessDataResult<List<GetAllInvoicesResponse>>(response);
 	}
 
+	
 	@Override
 	public DataResult<ReadInvoiceResponse> getById(int id) {
-		Invoice invoice = this.invoiceRepository.getById(id);
+		Invoice invoice = this.invoiceRepository.findById(id);
 		ReadInvoiceResponse response = this.modelMapperService.forResponse().map(invoice,
 				ReadInvoiceResponse.class);
 		return new SuccessDataResult<ReadInvoiceResponse>(response);
 	}
 
-
-
 	@Override
 	public DataResult<List<AdditionalItem>> getAllAdditionalItem(int rentalId) {
-		List<Additional> additionals=this.additionalRepository.getByRentalId(rentalId);
+		List<OrderedAdditionalItems> additionals=this.orderedAdditionalItemsRepository.findByRentalId(rentalId);
 		List<AdditionalItem> additionalItems = new ArrayList<AdditionalItem>();
 		
-		for (Additional item : additionals) {
-			AdditionalItem additionalItem=this.additionalItemRepository.getById(item.getAdditionalItem().getId());
+		for (OrderedAdditionalItems item : additionals) {
+			AdditionalItem additionalItem=this.additionalItemRepository.findById(item.getAdditionalItem().getId());
 			additionalItems.add(additionalItem);
 		}
-		
 		return new SuccessDataResult<List<AdditionalItem>>(additionalItems);
 	}
-	private double calculateTotalPrice(int rentalId) {
-		Rental rental = this.rentalRepository.getById(rentalId);
-		double totalPrice = rental.getTotalPrice() + calculateAdditionalItemTotalPrice(rentalId);
-		return totalPrice;
+	
+	private void calculateTotalPrice(int rentalId,Invoice invoice) {
+		double totalPrice=0;
+		Rental rental=this.rentalRepository.findById(rentalId);
+		totalPrice = rental.getTotalPrice() + calculateAdditionalItemTotalPrice(rental.getId());
+		invoice.setTotalPrice(totalPrice);
 	}
+	
 	private double calculateAdditionalItemTotalPrice(int id) {
 		double totalAdditionalService = 0;
-		List<Additional> additional = this.additionalRepository.getByRentalId(id);
-		for (Additional item : additional) {
+		List<OrderedAdditionalItems> additional = this.orderedAdditionalItemsRepository.findByRentalId(id);
+		for (OrderedAdditionalItems item : additional) {
 			totalAdditionalService += item.getTotalPrice();
 		}
 		return totalAdditionalService;
 	}
 	
 	private void checkIfInvoiceExistByInvoiceNumber(String name) {
-		Invoice currentInvoice=this.invoiceRepository.getByInvoiceNumber(name);
+		Invoice currentInvoice=this.invoiceRepository.findByInvoiceNumber(name);
 		if (currentInvoice!=null) {
 			throw new BusinessException("INVOICE.EXIST");
 		}
-	}
+	} 
 	
 	private void checkIfRentalExistByRentalId(int id) {
-		Rental currentRental=this.rentalRepository.getById(id);
-		if (currentRental!=null) {
+		Rental currentRental=this.rentalRepository.findById(id);
+		if (currentRental==null) {
 			throw new BusinessException("INVOICE.EXIST:REGISTERED.RENTAL.ID");
 		}
 	}

@@ -11,6 +11,7 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 
 public interface ColorService {
+	
 	Result add(CreateColorRequest createColorRequest);
 
 	Result delete(DeleteColorRequest deleteColorRequest);
