@@ -1,4 +1,4 @@
-package com.kodlamaio.rentACar.business.responses.customers;
+package com.kodlamaio.rentACar.business.responses.individualCustomers;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReadCustomerResponse {
-	private int id;
+public class ReadIndividualCustomerResponse {
+	private int individualId;
+	private int customerNumber;
+	private String phoneNumber;
 	private String firstName;
 	private String lastName;
 	private String nationalIdentification;
 	private int birthYear;
-	private String eMail;
+	private String email;
 	private String password;
 }

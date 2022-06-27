@@ -5,7 +5,8 @@ import java.rmi.RemoteException;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.PersonCheckService;
-import com.kodlamaio.rentACar.business.requests.customers.CreateCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.CreateIndividualCustomerRequest;
+import com.kodlamaio.rentACar.business.requests.individualCustomers.UpdateIndividualCustomerRequest;
 
 import tr.gov.nvi.tckimlik.WS.KPSPublicSoapProxy;
 
@@ -13,12 +14,20 @@ import tr.gov.nvi.tckimlik.WS.KPSPublicSoapProxy;
 public class MernisServiceAdapter implements PersonCheckService {
 
 	@Override
-	public boolean checkIfRealPerson(CreateCustomerRequest createCustomerRequest) throws NumberFormatException, RemoteException {
+	public boolean checkIfRealPerson(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws NumberFormatException, RemoteException {
 		KPSPublicSoapProxy kpsPublicSoapProxy = new KPSPublicSoapProxy();
-		return kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(createCustomerRequest.getNationalIdentification()),
-				createCustomerRequest.getFirstName().toUpperCase(), createCustomerRequest.getLastName().toUpperCase(), createCustomerRequest.getBirthYear());
+		return kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(createIndividualCustomerRequest.getNationalIdentification()),
+				createIndividualCustomerRequest.getFirstName().toUpperCase(), createIndividualCustomerRequest.getLastName().toUpperCase(), createIndividualCustomerRequest.getBirthYear());
 
 
 	}
+	@Override
+	public boolean checkIfRealPerson(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws NumberFormatException, RemoteException {
+		KPSPublicSoapProxy kpsPublicSoapProxy = new KPSPublicSoapProxy();
+		return kpsPublicSoapProxy.TCKimlikNoDogrula(Long.parseLong(updateIndividualCustomerRequest.getNationalIdentification()),
+				updateIndividualCustomerRequest.getFirstName().toUpperCase(), updateIndividualCustomerRequest.getLastName().toUpperCase(), updateIndividualCustomerRequest.getBirthYear());
 
+
+	}
+	
 }
