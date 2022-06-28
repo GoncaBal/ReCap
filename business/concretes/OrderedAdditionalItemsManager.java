@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.OrderedAdditionalItemsService;
@@ -33,6 +34,7 @@ public class OrderedAdditionalItemsManager implements OrderedAdditionalItemsServ
 	private AdditionalItemRepository additionalItemRepository;
 	private RentalRepository rentalRepository;
 
+	@Autowired
 	public OrderedAdditionalItemsManager(ModelMapperService modelMapperService,
 			OrderedAdditionalItemsRepository orderedAdditionalItemsRepository,
 			AdditionalItemRepository additionalItemRepository, RentalRepository rentalRepository) {
@@ -45,12 +47,15 @@ public class OrderedAdditionalItemsManager implements OrderedAdditionalItemsServ
 
 	@Override
 	public Result add(CreateOrderedAdditionalItemsRequest createAdditionalItemRequest) {
+		
 		checkIfExistAdditionalItemId(createAdditionalItemRequest.getAdditionalItemId());
 		checkIfExistRentalId(createAdditionalItemRequest.getRentalId());
+		
 		OrderedAdditionalItems orderedAdditionalItems = this.modelMapperService.forRequest()
 				.map(createAdditionalItemRequest, OrderedAdditionalItems.class);
 		AdditionalItem additionalItem = additionalItemRepository
 				.findById(createAdditionalItemRequest.getAdditionalItemId());
+		
 		calculateTotalPrice(orderedAdditionalItems, additionalItem);
 		this.orderedAdditionalItemsRepository.save(orderedAdditionalItems);
 		return new SuccessResult("ADDITIONAL.ADDED");
@@ -58,9 +63,11 @@ public class OrderedAdditionalItemsManager implements OrderedAdditionalItemsServ
 
 	@Override
 	public Result update(UpdateOrderedAdditionalItemsRequest updateOrderedAdditionalItemRequest) {
+		
 		checkIfExistOrderedAdditionalItemsId(updateOrderedAdditionalItemRequest.getId());
 		checkIfExistAdditionalItemId(updateOrderedAdditionalItemRequest.getAdditionalItemId());
 		checkIfExistRentalId(updateOrderedAdditionalItemRequest.getRentalId());
+		
 		OrderedAdditionalItems updateToOrderedAdditionalItems = this.modelMapperService.forRequest()
 				.map(updateOrderedAdditionalItemRequest, OrderedAdditionalItems.class);
 		AdditionalItem additionalItem = additionalItemRepository
@@ -72,7 +79,9 @@ public class OrderedAdditionalItemsManager implements OrderedAdditionalItemsServ
 
 	@Override
 	public Result delete(DeleteOrderedAdditionalsItemsRequest deleteAdditionalRequest) {
+		
 		checkIfExistOrderedAdditionalItemsId(deleteAdditionalRequest.getId());
+		
 		this.orderedAdditionalItemsRepository.deleteById(deleteAdditionalRequest.getId());
 		return new SuccessResult("ADDITIONAL.DELETED");
 	}
@@ -89,7 +98,9 @@ public class OrderedAdditionalItemsManager implements OrderedAdditionalItemsServ
 
 	@Override
 	public DataResult<ReadOrderedAdditionalItemsResponse> getById(int id) {
+		
 		checkIfExistOrderedAdditionalItemsId(id);
+		
 		OrderedAdditionalItems orderedAdditionalItems = this.orderedAdditionalItemsRepository.findById(id);
 		ReadOrderedAdditionalItemsResponse response = this.modelMapperService.forResponse().map(orderedAdditionalItems,
 				ReadOrderedAdditionalItemsResponse.class);

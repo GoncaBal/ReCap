@@ -3,6 +3,7 @@ package com.kodlamaio.rentACar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.CarService;
@@ -32,6 +33,7 @@ public class CarManager implements CarService {
 	private ColorRepository colorRepository;
 	private ModelMapperService modelMapperService;
 
+	@Autowired
 	public CarManager(CarRepository carRepository, BrandRepository brandRepository, ColorRepository colorRepository,
 			ModelMapperService modelMapperService) {
 		this.carRepository = carRepository;
@@ -46,6 +48,7 @@ public class CarManager implements CarService {
 		checkIfExistBrandId(createCarRequest.getBrandId());
 		checkIfExistColorId(createCarRequest.getColorId());
 		checkIfBrandCount(createCarRequest.getBrandId());
+		checkIfExistCarPlate(createCarRequest.getCarPlate());
 
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		car.setState(1);
@@ -59,8 +62,9 @@ public class CarManager implements CarService {
 		checkIfExistCarId(updateCarRequest.getId());
 		checkIfExistBrandId(updateCarRequest.getBrandId());
 		checkIfExistColorId(updateCarRequest.getColorId());
-		checkIfBrandCount(updateCarRequest.getBrandId());
-
+		checkIfCarPlateIsSameForUpdate(updateCarRequest.getId(), updateCarRequest.getCarPlate());
+		checkIfBrandIdIsSameForUpdate(updateCarRequest.getId(), updateCarRequest.getBrandId());
+		
 		Car carToUpdate = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
 		carToUpdate.setState(1);
 		this.carRepository.save(carToUpdate);
@@ -69,6 +73,9 @@ public class CarManager implements CarService {
 
 	@Override
 	public Result delete(DeleteCarRequest deleteCarRequest) {
+		
+		checkIfExistCarId(deleteCarRequest.getId());
+		
 		carRepository.deleteById(deleteCarRequest.getId());
 		return new SuccessResult("CAR.DELETED");
 	}
@@ -84,19 +91,24 @@ public class CarManager implements CarService {
 
 	@Override
 	public DataResult<ReadCarResponse> getById(int id) {
+
 		checkIfExistCarId(id);
+
 		Car car = this.carRepository.findById(id);
 		ReadCarResponse response = this.modelMapperService.forResponse().map(car, ReadCarResponse.class);
 		return new SuccessDataResult<ReadCarResponse>(response);
 	}
 
-	private void checkIfBrandCount(int id) {
-		List<Car> cars = carRepository.findByBrandId(id);
-		if (cars.size() > 4) {
-			throw new BusinessException("ERROR:CAR.ADDED");
-		}
+	@Override
+	public DataResult<List<GetAllCarsResponse>> getByState(int state) {
+		List<Car> cars = this.carRepository.findAll();
+		List<GetAllCarsResponse> response = cars.stream()
+				.map(car -> this.modelMapperService.forResponse().map(car, GetAllCarsResponse.class))
+				.filter(car -> car.getState() == state).collect(Collectors.toList());
+		return new SuccessDataResult<List<GetAllCarsResponse>>(response, "CAR.LISTED");
 	}
-
+	
+	//böyle bir carId mevcut mu diye kontrol
 	private void checkIfExistCarId(int id) {
 		Car currentCar = this.carRepository.findById(id);
 		if (currentCar == null) {
@@ -104,6 +116,7 @@ public class CarManager implements CarService {
 		}
 	}
 
+	//böyle bir brandId mevcut mu diye kontrol
 	private void checkIfExistBrandId(int id) {
 		Brand currentBrand = this.brandRepository.findById(id);
 		if (currentBrand == null) {
@@ -111,6 +124,7 @@ public class CarManager implements CarService {
 		}
 	}
 
+	//böyle bir colorId mevcut mu diye kontrol
 	private void checkIfExistColorId(int id) {
 		Color currentColor = this.colorRepository.findById(id);
 		if (currentColor == null) {
@@ -118,6 +132,36 @@ public class CarManager implements CarService {
 		}
 	}
 
-	
+	//böyle bir carPlate mevcut mu diye kontrol
+	private void checkIfExistCarPlate(String carPlate) {
+		Car currentCar = this.carRepository.findByCarPlate(carPlate);
+		if (currentCar != null) {
+			throw new BusinessException("EXIST.CAR.PLATE");
+		}
+	}
 
+	//güncelleme yapılan carPLate aynı mı kontrolü
+	private void checkIfCarPlateIsSameForUpdate(int carId,String carPlate) {
+		Car currentCar=this.carRepository.findById(carId);
+		if (!currentCar.getCarPlate().equals(carPlate)) {
+			checkIfExistCarPlate(carPlate);
+		}
+	}
+	
+	//aynı brand'ten en fazla 5 tane eklenebilir
+	private void checkIfBrandCount(int id) {
+		List<Car> cars = carRepository.findByBrandId(id);
+		if (cars.size() > 4) {
+			throw new BusinessException("ERROR:CAR.ADDED");
+		}
+	}
+	
+	//güncelleme yapılan brandId aynı mı kontrolü
+	private void checkIfBrandIdIsSameForUpdate(int carId,int brandId) {
+		Car currentCar=this.carRepository.findById(carId);
+		Brand currentBrand=this.brandRepository.findById(brandId);
+		if (currentCar.getBrand().getId()!=currentBrand.getId()) {
+			checkIfBrandCount(brandId);
+		}
+	}
 }

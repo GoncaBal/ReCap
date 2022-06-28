@@ -21,4 +21,8 @@ public interface CarService {
 	DataResult<List<GetAllCarsResponse>> getAll();
 
 	DataResult<ReadCarResponse> getById(int id);
+	
+	DataResult<List<GetAllCarsResponse>> getByState(int state);
+	
+	
 }

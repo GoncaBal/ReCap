@@ -12,9 +12,13 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 
 public interface RentalService {
 
-	Result addIndividualCustomerforRental(CreateRentalRequest createRentalRequest);
+	Result addIndividualCustomerForRental(CreateRentalRequest createRentalRequest);
 	
-	Result updateIndividualCustomerforRental(UpdateRentalRequest updateRentalRequest);
+	Result addCorporateCustomerForRental(CreateRentalRequest createRentalRequest);
+	
+	Result updateIndividualCustomerForRental(UpdateRentalRequest updateRentalRequest);
+	
+	Result updateCorporateCustomerForRental(UpdateRentalRequest updateRentalRequest);
 
 	Result delete(DeleteRentalRequest deleteRentalRequest);
 

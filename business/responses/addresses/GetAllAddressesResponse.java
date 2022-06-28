@@ -11,5 +11,5 @@ public class GetAllAddressesResponse {
 	private int id;
 	private String contactAdress;
 	private String invoiceAdress;
-	private int customer;
+	private int customerId;
 }

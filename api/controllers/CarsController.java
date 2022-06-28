@@ -52,7 +52,12 @@ public class CarsController {
 	}
 	
 	@GetMapping("/getbyid")
-	public DataResult<ReadCarResponse> getById(@RequestParam @Valid int id) {
-		return carService.getById(id);
+	public DataResult<ReadCarResponse> getById(@RequestParam int id) {
+		return this.carService.getById(id);
+	}
+	
+	@GetMapping("/getbystate")
+	public DataResult<List<GetAllCarsResponse>> getByState(@RequestParam int state){
+		return this.carService.getByState(state);
 	}
 }

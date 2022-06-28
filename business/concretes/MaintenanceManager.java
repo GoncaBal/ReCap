@@ -3,6 +3,7 @@ package com.kodlamaio.rentACar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.MaintenanceService;
@@ -29,6 +30,7 @@ public class MaintenanceManager implements MaintenanceService {
 	private ModelMapperService modelMapperService;
 	private CarRepository carRepository;
 
+	@Autowired
 	public MaintenanceManager(MaintenanceRepository maintenanceRepository, ModelMapperService modelMapperService,
 			CarRepository carRepository) {
 		this.maintenanceRepository = maintenanceRepository;
@@ -38,28 +40,38 @@ public class MaintenanceManager implements MaintenanceService {
 
 	@Override
 	public Result add(CreateMaintenanceRequest createMaintenanceRequest) {
-		Maintenance maintenance = this.modelMapperService.forRequest().map(createMaintenanceRequest, Maintenance.class);
+		
 		checkIfExistCarId(createMaintenanceRequest.getCarId());
-		checkIfDates(maintenance);
-		checkIfAvailableState(maintenance);
+		checkIfDates(createMaintenanceRequest.getMaintenanceId());
+		checkIfCarRentedState(createMaintenanceRequest.getCarId());
+		checkIfCarMaintenancedState(createMaintenanceRequest.getMaintenanceId());
+		
+		Maintenance maintenance = this.modelMapperService.forRequest().map(createMaintenanceRequest, Maintenance.class);
+		
 		this.maintenanceRepository.save(maintenance);
 		return new SuccessResult("MAINTENANCE.ADDED");
 	}
 
 	@Override
 	public Result update(UpdateMaintenanceRequest updateMaintenanceRequest) {
-		checkIfExistMaintenanceId(updateMaintenanceRequest.getId());
+		
+		checkIfExistMaintenanceId(updateMaintenanceRequest.getMaintenanceId());
 		checkIfExistCarId(updateMaintenanceRequest.getCarId());
+		checkIfDates(updateMaintenanceRequest.getMaintenanceId());
+		checkCarChangeInUpdate(updateMaintenanceRequest); //tekrar dönülecek
+		
 		Maintenance updateToMaintenance = this.modelMapperService.forRequest().map(updateMaintenanceRequest,
 				Maintenance.class);
-		checkIfDates(updateToMaintenance);
+		
 		this.maintenanceRepository.save(updateToMaintenance);
 		return new SuccessResult("MAINTENANCE.UPDATED");
 	}
 
 	@Override
 	public Result delete(DeleteMaintenanceRequest deleteMaintenanceRequest) {
+		
 		checkIfExistMaintenanceId(deleteMaintenanceRequest.getId());
+		
 		maintenanceRepository.deleteById(deleteMaintenanceRequest.getId());
 		return new SuccessResult("MAINTENANCE.DELETED");
 	}
@@ -76,7 +88,9 @@ public class MaintenanceManager implements MaintenanceService {
 
 	@Override
 	public DataResult<ReadMaintenanceResponse> getById(int id) {
+		
 		checkIfExistMaintenanceId(id);
+		
 		Maintenance maintenance = this.maintenanceRepository.findById(id);
 		ReadMaintenanceResponse response = this.modelMapperService.forResponse().map(maintenance,
 				ReadMaintenanceResponse.class);
@@ -97,19 +111,49 @@ public class MaintenanceManager implements MaintenanceService {
 		}
 	}
 
-	private void checkIfDates(Maintenance maintenance) {
-		long dayDifference = (maintenance.getDateReturned().getTime() - maintenance.getDateSent().getTime());
+	private void checkIfDates(int maintenanceId) {
+		Maintenance currentMaintenance=this.maintenanceRepository.findById(maintenanceId);
+		long dayDifference = (currentMaintenance.getDateReturned().getTime() - currentMaintenance.getDateSent().getTime());
 		if (dayDifference < 0) {
-			throw new BusinessException("INVALID DATE");
+			throw new BusinessException("INVALID.DATE");
 		}
 	}
 	
-	private void checkIfAvailableState(Maintenance maintenance) {
-		Car currentCar = this.carRepository.findById(maintenance.getCar().getId());
-		if (currentCar.getState() == 1 || currentCar.getState()==3) {
-			currentCar.setState(2);
-		} else {
-			throw new BusinessException("NOT.AVAILABLE.STATE");
+	private void checkCarChangeInUpdate(UpdateMaintenanceRequest updateMaintenanceRequest) {
+		Maintenance currentMaintenance = this.maintenanceRepository.findById(updateMaintenanceRequest.getMaintenanceId());
+		Car oldCar = currentMaintenance.getCar(); 
+		
+		if(updateMaintenanceRequest.getCarId() != oldCar.getId()) {
+			oldCar.setState(1);
+			updateState(updateMaintenanceRequest);
 		}
+	}
+	
+	private void checkIfCarRentedState(int carId) {
+		Car currentCar=this.carRepository.findById(carId);
+		if (currentCar.getState()==3) {
+			throw new BusinessException("CAR.IS.RENTED");		
+		}
+	}
+	private void checkIfCarMaintenancedState(int maintenanceId) {
+		Car currentCar=this.carRepository.findById(maintenanceId);
+		if (currentCar.getState()==2) {
+			throw new BusinessException("CAR.IS.MAINTENANCED");
+		}
+	}
+
+
+	@Override
+	public Result updateState(UpdateMaintenanceRequest updateMaintenanceRequest) {
+		checkIfExistCarId(updateMaintenanceRequest.getCarId());
+		
+		Car currentCar=this.carRepository.findById(updateMaintenanceRequest.getCarId());
+		if (currentCar.getState()==1) {
+			currentCar.setState(2);
+		}else {
+			currentCar.setState(1);
+		}
+		this.carRepository.save(currentCar);
+		return new SuccessResult();
 	}
 }

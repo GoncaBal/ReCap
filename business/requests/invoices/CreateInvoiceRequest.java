@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateInvoiceRequest {
+	private int invoiceId;
 	@NotBlank
 	@NotNull
 	@Size(min=4,max=10,message="Must be at least four characters.")

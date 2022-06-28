@@ -3,6 +3,7 @@ package com.kodlamaio.rentACar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.ColorService;
@@ -26,6 +27,7 @@ public class ColorManager implements ColorService {
 	private ColorRepository colorRepository;
 	private ModelMapperService modelMapperService;
 
+	@Autowired
 	public ColorManager(ColorRepository colorRepository, ModelMapperService modelMapperService) {
 		this.colorRepository = colorRepository;
 		this.modelMapperService = modelMapperService;
@@ -33,7 +35,9 @@ public class ColorManager implements ColorService {
 
 	@Override
 	public Result add(CreateColorRequest createColorRequest) {
-		checkIfColorExistName(createColorRequest.getName());
+		
+		checkIfExistColorName(createColorRequest.getName());
+		
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		this.colorRepository.save(color);
 		return new SuccessResult("COLOR.ADDED");
@@ -41,8 +45,10 @@ public class ColorManager implements ColorService {
 
 	@Override
 	public Result update(UpdateColorRequest updateColorRequest) {
+		
 		checkIfExistColorId(updateColorRequest.getId());
-		checkIfColorExistName(updateColorRequest.getName());
+		checkIfExistColorName(updateColorRequest.getName());
+		
 		Color colorToUpdate = this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
 		colorRepository.save(colorToUpdate);
 		return new SuccessResult("COLOR.UPDATED");
@@ -50,7 +56,9 @@ public class ColorManager implements ColorService {
 	
 	@Override
 	public Result delete(DeleteColorRequest deleteColorRequest) {
+		
 		checkIfExistColorId(deleteColorRequest.getId());
+		
 		this.colorRepository.deleteById(deleteColorRequest.getId());
 		return new SuccessResult("COLOR.DELETED");
 	}
@@ -66,13 +74,15 @@ public class ColorManager implements ColorService {
 
 	@Override
 	public DataResult<ReadColorResponse> getById(int id) {
+		
 		checkIfExistColorId(id);
+		
 		Color color = this.colorRepository.findById(id);
 		ReadColorResponse response = this.modelMapperService.forResponse().map(color, ReadColorResponse.class);
 		return new SuccessDataResult<ReadColorResponse>(response);
 	}
 	
-	private void checkIfColorExistName(String name) {
+	private void checkIfExistColorName(String name) {
 		Color currentColor = this.colorRepository.findByName(name);
 		if (currentColor != null) {
 			throw new BusinessException("COLOR.EXIST");

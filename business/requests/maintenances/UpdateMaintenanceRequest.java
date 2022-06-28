@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateMaintenanceRequest {
-	private int id;
+	private int maintenanceId;
 	@NotNull 
 	@DateTimeFormat
 	private Date dateSent;

@@ -23,21 +23,32 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 @RestController
 @RequestMapping("/api/rentals")
 public class RentalsController {
-	
+
 	private RentalService rentalService;
 
+	
 	public RentalsController(RentalService rentalService) {
 		this.rentalService = rentalService;
 	}
 
-	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateRentalRequest createRentalRequest) {
-		return this.rentalService.addIndividualCustomerforRental(createRentalRequest);
+	@PostMapping("/addindividualcustomerforrental")
+	public Result addIndividualCustomerForRental(@RequestBody @Valid CreateRentalRequest createRentalRequest) {
+		return this.rentalService.addIndividualCustomerForRental(createRentalRequest);
 	}
 
-	@PostMapping("/update")
-	public Result update(@RequestBody @Valid UpdateRentalRequest updateRentalRequest) {
-		return this.rentalService.updateIndividualCustomerforRental(updateRentalRequest);
+	@PostMapping("/addcorporatecustomerforrental")
+	public Result addCorporateCustomerForRental(@RequestBody @Valid CreateRentalRequest createRentalRequest) {
+		return this.rentalService.addCorporateCustomerForRental(createRentalRequest);
+	}
+
+	@PostMapping("/updateindividualcustomerforrental")
+	public Result updateIndividualCustomerForRental(@RequestBody @Valid UpdateRentalRequest updateRentalRequest) {
+		return this.rentalService.updateIndividualCustomerForRental(updateRentalRequest);
+	}
+
+	@PostMapping("/updatecorporatecustomerforrental")
+	public Result updateCorporateCustomerForRental(@RequestBody @Valid UpdateRentalRequest updateRentalRequest) {
+		return this.rentalService.updateCorporateCustomerForRental(updateRentalRequest);
 	}
 
 	@PostMapping("/delete")
@@ -51,7 +62,7 @@ public class RentalsController {
 	}
 
 	@GetMapping("/getbyid")
-	public DataResult<ReadRentalResponse> getById(@RequestParam @Valid int id) {
+	public DataResult<ReadRentalResponse> getById(@RequestParam  int id) {
 		return this.rentalService.getById(id);
 	}
 }

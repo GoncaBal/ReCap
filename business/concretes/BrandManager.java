@@ -3,6 +3,7 @@ package com.kodlamaio.rentACar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.BrandService;
@@ -25,10 +26,19 @@ public class BrandManager implements BrandService {
 	 
 	private BrandRepository brandRepository;
 	private ModelMapperService modelMapperService;
+	
+	@Autowired
+	public BrandManager(BrandRepository brandRepository, ModelMapperService modelMapperService) {
+	
+		this.brandRepository = brandRepository;
+		this.modelMapperService = modelMapperService;
+	}
 
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest) {
+		
 		checkIfBrandExistByName(createBrandRequest.getName());
+		
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		brandRepository.save(brand);
 		return new SuccessResult("BRAND.ADDED");
@@ -36,8 +46,10 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) {
+		
 		checkIfExistBrandId(updateBrandRequest.getId());
 		checkIfBrandExistByName(updateBrandRequest.getName());
+		
 		Brand brandToUpdate = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
 		this.brandRepository.save(brandToUpdate);
 		return new SuccessResult("BRAND.UPDATED");
@@ -45,7 +57,9 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public Result delete(DeleteBrandRequest deleteBrandRequest) {
+		
 		checkIfExistBrandId(deleteBrandRequest.getId());
+		
 		brandRepository.deleteById(deleteBrandRequest.getId());
 		return new SuccessResult("BRAND.DELETED");
 	}
@@ -59,7 +73,9 @@ public class BrandManager implements BrandService {
 
 	@Override
 	public DataResult<ReadBrandResponse> getById(int id) {
+		
 		checkIfExistBrandId(id);
+		
 		return new SuccessDataResult<ReadBrandResponse>(this.modelMapperService.forResponse().map(id, ReadBrandResponse.class),"BRAND.LISTED");
 	}
 

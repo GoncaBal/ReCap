@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kodlamaio.rentACar.business.abstracts.InvoiceService;
@@ -35,6 +36,7 @@ public class InvoiceManager implements InvoiceService {
 	private OrderedAdditionalItemsRepository orderedAdditionalItemsRepository;
 	private RentalRepository rentalRepository;
 	
+	@Autowired
 	public InvoiceManager(ModelMapperService modelMapperService, InvoiceRepository invoiceRepository,
 			AdditionalItemRepository additionalItemRepository,
 			OrderedAdditionalItemsRepository orderedAdditionalItemsRepository, RentalRepository rentalRepository) {
@@ -44,21 +46,29 @@ public class InvoiceManager implements InvoiceService {
 		this.orderedAdditionalItemsRepository = orderedAdditionalItemsRepository;
 		this.rentalRepository = rentalRepository;
 	}
+	
 	@Override
 	public Result add(CreateInvoiceRequest createInvoiceRequest) {
+		
 		checkIfInvoiceExistByInvoiceNumber(createInvoiceRequest.getInvoiceNumber());
-		checkIfRentalExistByRentalId(createInvoiceRequest.getRentalId());
+		checkIfExistRentalId(createInvoiceRequest.getRentalId());
+		checkIfInvoiceNumberControl(createInvoiceRequest.getInvoiceId());
+		
 		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
-		invoice.setState(1);
 		calculateTotalPrice(createInvoiceRequest.getRentalId(),invoice);
+		invoice.setState(0);
 		this.invoiceRepository.save(invoice);
 		return new SuccessResult("INVOICE.ADDED");
 	}
 
 	@Override
 	public Result delete(DeleteInvoiceRequest deleteInvoiceRequest) {
+		
+		checkIfExistInioviceId(deleteInvoiceRequest.getId());
+		
 		Invoice invoice=this.modelMapperService.forRequest().map(deleteInvoiceRequest, Invoice.class);
-		invoice.setState(2);
+		invoice.setState(1);
+		this.invoiceRepository.save(invoice);
 		return new SuccessResult("INVOICE.CANCELLED");
 	}
 
@@ -74,6 +84,7 @@ public class InvoiceManager implements InvoiceService {
 	
 	@Override
 	public DataResult<ReadInvoiceResponse> getById(int id) {
+		checkIfExistInioviceId(id);
 		Invoice invoice = this.invoiceRepository.findById(id);
 		ReadInvoiceResponse response = this.modelMapperService.forResponse().map(invoice,
 				ReadInvoiceResponse.class);
@@ -115,10 +126,24 @@ public class InvoiceManager implements InvoiceService {
 		}
 	} 
 	
-	private void checkIfRentalExistByRentalId(int id) {
-		Rental currentRental=this.rentalRepository.findById(id);
-		if (currentRental==null) {
-			throw new BusinessException("INVOICE.EXIST:REGISTERED.RENTAL.ID");
+	private void checkIfInvoiceNumberControl(int invoiceId) {
+		Invoice currentInvoice=this.invoiceRepository.findByRentalId(invoiceId);
+		if ((currentInvoice!=null)&&(currentInvoice.getState()!=1)) {
+			throw new BusinessException("EXIST.INVOICE.FOR.RENTAL");
 		}
 	}
+
+private void checkIfExistRentalId(int rentalId) {
+	Rental currentRental=this.rentalRepository.findById(rentalId);
+	if (currentRental==null) {
+		throw new BusinessException("INVALID.RENTAL.ID");
+	}
+}
+
+private void checkIfExistInioviceId(int invoiceId) {
+	Invoice currentInvoice=this.invoiceRepository.findById(invoiceId);
+	if (currentInvoice==null) {
+		throw new BusinessException("INVALID.INVOICE.ID");
+	}
+}
 }

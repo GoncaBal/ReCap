@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReadIndividualCustomerResponse {
 	private int individualId;
-	private int customerNumber;
+	private String customerNumber;
 	private String phoneNumber;
 	private String firstName;
 	private String lastName;

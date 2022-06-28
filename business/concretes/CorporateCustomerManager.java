@@ -38,6 +38,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 
 	@Override
 	public Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest) {
+		
 		checkIfCustomerExistCompanyName(createCorporateCustomerRequest.getCompanyName());
 		checkIfCustomerExistByeMail(createCorporateCustomerRequest.getEmail());
 		checkIfExistTaxNumber(createCorporateCustomerRequest.getTaxNumber());
@@ -53,6 +54,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		checkIfExistCorporateCustomerId(updateCorporateCustomerRequest.getCorporateId());
 		checkIfEmailIsSameForUpdate(updateCorporateCustomerRequest.getCorporateId(),updateCorporateCustomerRequest.getEmail());
 		checkIfTaxNumberIsSameForUpdate(updateCorporateCustomerRequest.getCorporateId(), updateCorporateCustomerRequest.getTaxNumber());
+		checkIfCompanyNameIsSameForUpdate(updateCorporateCustomerRequest.getCorporateId(), updateCorporateCustomerRequest.getCompanyName());
 		
 		CorporateCustomer updateToCorporateCustomer=this.modelMapperService.forRequest().map(updateCorporateCustomerRequest, CorporateCustomer.class);
 		this.corporateCustomerRepository.save(updateToCorporateCustomer);
@@ -99,24 +101,38 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		return new SuccessDataResult<ReadCorporateCustomerResponse>(response);
 	}
 
+	//Böyle bir customerId var mı kontrolü
 	private void checkIfExistCorporateCustomerId(int id) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findById(id);
 		if (currentCorporateCustomer==null) {
 			throw new BusinessException("INVALID.CORPORATE.CUSTOMER.ID");
 		}
 	}
+	
+	//Böyle bir şirket adı var mı kontrolü
 	private void checkIfCustomerExistCompanyName(String companyName) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findByCompanyName(companyName);
 		if (currentCorporateCustomer!=null) {
 			throw new BusinessException("CORPORATE.CUSTOMER.COMPANY.NAME.EXIST");
 		}
 	}
+	
+	private void checkIfCompanyNameIsSameForUpdate(int corporateId,String companyName) {
+		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findById(corporateId);
+		if (!currentCorporateCustomer.getCompanyName().equals(companyName)) {
+			checkIfCustomerExistCompanyName(companyName);
+		}
+	}
+	
+	//Böyle bir email var mı kontrolü
 	private void checkIfCustomerExistByeMail(String email) {
 		CorporateCustomer currentCorporateCustomer = this.corporateCustomerRepository.findByemail(email);
 		if (currentCorporateCustomer != null) {
 			throw new BusinessException("CORPORATE.CUSTOMER.MAIL.EXIST");
 		}
 	}
+	
+	//güncelleme için girilen email aynı mı
 	private void checkIfEmailIsSameForUpdate(int corporateId,String email) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findById(corporateId);
 		if (!currentCorporateCustomer.getEmail().equals(email)) {
@@ -124,6 +140,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		}
 	}
 	
+	//Böyle bir TaxNumber var mı kontrolü
 	private void checkIfExistTaxNumber(String taxNumber) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findByTaxNumber(taxNumber);
 		if (currentCorporateCustomer!=null) {
@@ -131,6 +148,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		}
 	}
 	
+	//güncelleme için girilen TaxNumber aynı mı 
 	private void checkIfTaxNumberIsSameForUpdate(int corporateId,String taxNumber) {
 		CorporateCustomer currentCorporateCustomer =this.corporateCustomerRepository.findById(corporateId);
 		if (!currentCorporateCustomer.getTaxNumber().equals(taxNumber)) {
