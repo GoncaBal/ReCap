@@ -9,4 +9,5 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 	Invoice findById(int id);
 	Invoice findByRentalId(int invoiceId);
 	
+	
 }

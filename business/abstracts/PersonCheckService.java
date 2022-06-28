@@ -9,6 +9,7 @@ public interface PersonCheckService {
 
 	boolean checkIfRealPerson(CreateIndividualCustomerRequest createIndividualCustomerRequest)
 			throws NumberFormatException, RemoteException;
+	
 	boolean checkIfRealPerson(UpdateIndividualCustomerRequest updateIndividualCustomerRequest)
 			throws NumberFormatException, RemoteException;
 	

@@ -101,7 +101,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		return new SuccessDataResult<ReadCorporateCustomerResponse>(response);
 	}
 
-	//Böyle bir customerId var mı kontrolü
+	
 	private void checkIfExistCorporateCustomerId(int id) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findById(id);
 		if (currentCorporateCustomer==null) {
@@ -109,7 +109,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		}
 	}
 	
-	//Böyle bir şirket adı var mı kontrolü
+	
 	private void checkIfCustomerExistCompanyName(String companyName) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findByCompanyName(companyName);
 		if (currentCorporateCustomer!=null) {
@@ -124,7 +124,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		}
 	}
 	
-	//Böyle bir email var mı kontrolü
+	
 	private void checkIfCustomerExistByeMail(String email) {
 		CorporateCustomer currentCorporateCustomer = this.corporateCustomerRepository.findByemail(email);
 		if (currentCorporateCustomer != null) {
@@ -132,7 +132,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		}
 	}
 	
-	//güncelleme için girilen email aynı mı
+	
 	private void checkIfEmailIsSameForUpdate(int corporateId,String email) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findById(corporateId);
 		if (!currentCorporateCustomer.getEmail().equals(email)) {
@@ -140,7 +140,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		}
 	}
 	
-	//Böyle bir TaxNumber var mı kontrolü
+	
 	private void checkIfExistTaxNumber(String taxNumber) {
 		CorporateCustomer currentCorporateCustomer=this.corporateCustomerRepository.findByTaxNumber(taxNumber);
 		if (currentCorporateCustomer!=null) {
@@ -148,12 +148,18 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		}
 	}
 	
-	//güncelleme için girilen TaxNumber aynı mı 
+	
 	private void checkIfTaxNumberIsSameForUpdate(int corporateId,String taxNumber) {
 		CorporateCustomer currentCorporateCustomer =this.corporateCustomerRepository.findById(corporateId);
 		if (!currentCorporateCustomer.getTaxNumber().equals(taxNumber)) {
 			checkIfExistTaxNumber(taxNumber);
 		}
+	}
+
+	@Override
+	public CorporateCustomer getCorporateCustomerById(int id) {
+		checkIfExistCorporateCustomerId(id);
+		return this.corporateCustomerRepository.findById(id);
 	}
 	
 }

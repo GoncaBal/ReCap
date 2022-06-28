@@ -92,4 +92,10 @@ public class BrandManager implements BrandService {
 			throw new BusinessException("INVALID.BRAND.ID");
 		}
 	}
+
+	@Override
+	public Brand getBrandById(int brandId) {
+		checkIfExistBrandId(brandId);
+		return brandRepository.findById(brandId);
+	}
 }

@@ -100,4 +100,10 @@ public class AdditionalItemManager implements AdditionalItemService {
 			throw new BusinessException("INVALID.ADDITIONAL.ITEM.ID");
 		}
 	}
+
+	@Override
+	public AdditionalItem getAdditionalItemById(int additionalItemId) {
+		checkIfExistAdditionalItemId(additionalItemId);
+		return this.additionalItemRepository.findById(additionalItemId);
+	}
 }

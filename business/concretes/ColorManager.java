@@ -96,4 +96,10 @@ public class ColorManager implements ColorService {
 		}
 	}
 
+	@Override
+	public Color getColorById(int colorId) {
+		checkIfExistColorId(colorId);
+		return colorRepository.findById(colorId);
+	}
+
 }

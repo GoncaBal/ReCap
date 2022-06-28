@@ -25,7 +25,7 @@ public class CreateCarRequest {
 	@NotNull
 	private double dailyPrice;
 	
-	@Pattern(regexp = "/^([0-9]{2})([A-Z]{1,3})([0-9]{2,4})$/")
+	//@Pattern(regexp = "/^([0-9]{2})([A-Z]{1,3})([0-9]{2,4})$/")
 	@NotNull
 	private String carPlate;
 	

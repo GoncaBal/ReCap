@@ -7,7 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kodlamaio.rentACar.business.abstracts.CarService;
+import com.kodlamaio.rentACar.business.abstracts.CorporateCustomerService;
 import com.kodlamaio.rentACar.business.abstracts.FindeksScoreCheckService;
+import com.kodlamaio.rentACar.business.abstracts.IndividualCustomerService;
 import com.kodlamaio.rentACar.business.abstracts.RentalService;
 import com.kodlamaio.rentACar.business.requests.rentals.CreateRentalRequest;
 import com.kodlamaio.rentACar.business.requests.rentals.DeleteRentalRequest;
@@ -20,36 +23,31 @@ import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessDataResult;
 import com.kodlamaio.rentACar.core.utilities.results.SuccessResult;
-import com.kodlamaio.rentACar.dataAccess.abstracts.CarRepository;
-import com.kodlamaio.rentACar.dataAccess.abstracts.CorporateCustomerRepository;
-import com.kodlamaio.rentACar.dataAccess.abstracts.IndividualCustomerRepository;
 import com.kodlamaio.rentACar.dataAccess.abstracts.RentalRepository;
 import com.kodlamaio.rentACar.entities.concretes.Car;
-import com.kodlamaio.rentACar.entities.concretes.CorporateCustomer;
-import com.kodlamaio.rentACar.entities.concretes.IndividualCustomer;
 import com.kodlamaio.rentACar.entities.concretes.Rental;
 
 @Service
 public class RentalManager implements RentalService {
 
 	private RentalRepository rentalRepository;
-	private CarRepository carRepository;
+	private CarService carService;
 	private ModelMapperService modelMapperService;
 	private FindeksScoreCheckService findeksScoreCheckService;
-	private IndividualCustomerRepository individualCustomerRepository;
-	private CorporateCustomerRepository corporateCustomerRepository;
+	private IndividualCustomerService individualCustomerService;
+	private CorporateCustomerService corporateCustomerSrvice;
 
 	@Autowired
-	public RentalManager(RentalRepository rentalRepository, CarRepository carRepository,
+	public RentalManager(RentalRepository rentalRepository, CarService carService,
 			ModelMapperService modelMapperService, FindeksScoreCheckService findeksScoreCheckService,
-			IndividualCustomerRepository individualCustomerRepository,
-			CorporateCustomerRepository corporateCustomerRepository) {
+			IndividualCustomerService individualCustomerService,
+			CorporateCustomerService corporateCustomerSrvice) {
 		this.rentalRepository = rentalRepository;
-		this.carRepository = carRepository;
+		this.carService = carService;
 		this.modelMapperService = modelMapperService;
 		this.findeksScoreCheckService = findeksScoreCheckService;
-		this.individualCustomerRepository = individualCustomerRepository;
-		this.corporateCustomerRepository = corporateCustomerRepository;
+		this.individualCustomerService = individualCustomerService;
+		this.corporateCustomerSrvice = corporateCustomerSrvice;
 
 	}
 
@@ -57,14 +55,13 @@ public class RentalManager implements RentalService {
 	public Result addIndividualCustomerForRental(CreateRentalRequest createRentalRequest) {
 
 		checkIfExistCarId(createRentalRequest.getCarId());
-		checkFindeksMinValue(createRentalRequest.getCarId(), createRentalRequest.getCustomerId());
 		checkIfExistIndividualCustomer(createRentalRequest.getCustomerId());
-		checkIfAvailableState(createRentalRequest.getCarId());
-
+		checkFindeksMinValue(createRentalRequest.getCarId(), createRentalRequest.getCustomerId());
+		checkIfCarAlreadyRented(createRentalRequest.getCarId());
+		checkIfExistCarInMaintenance(createRentalRequest.getCarId());
+		setStateAsRented(createRentalRequest.getCarId());
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
-		Car car = this.carRepository.findById(createRentalRequest.getCarId());
-
-		calculateTotalPrice(rental, car);
+		calculateTotalPrice(rental, carService.getCarById(createRentalRequest.getCarId()));
 		this.rentalRepository.save(rental);
 		return new SuccessResult("RENTAL.ADDED");
 	}
@@ -74,12 +71,13 @@ public class RentalManager implements RentalService {
 
 		checkIfExistCarId(createRentalRequest.getCarId());
 		checkIfExistCorporateCustomer(createRentalRequest.getCustomerId());
-		checkIfAvailableState(createRentalRequest.getCarId());
+		checkIfCarAlreadyRented(createRentalRequest.getCarId());
+		checkIfExistCarInMaintenance(createRentalRequest.getCarId());
+		setStateAsRented(createRentalRequest.getCarId());
 
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
-		Car car = this.carRepository.findById(createRentalRequest.getCarId());
 
-		calculateTotalPrice(rental, car);
+		calculateTotalPrice(rental, carService.getCarById(createRentalRequest.getCarId()));
 		this.rentalRepository.save(rental);
 		return new SuccessResult("RENTAL.ADDED");
 	}
@@ -91,12 +89,11 @@ public class RentalManager implements RentalService {
 		checkIfExistCarId(updateRentalRequest.getCarId());
 		checkFindeksMinValue(updateRentalRequest.getCarId(), updateRentalRequest.getCustomerId());
 		checkIfExistIndividualCustomer(updateRentalRequest.getCustomerId());
-		checkIfAvailableState(updateRentalRequest.getCarId());
-
+		checkIfCarAlreadyRented(updateRentalRequest.getCarId());
+		checkIfExistCarInMaintenance(updateRentalRequest.getCarId());
 		Rental updateToRental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
-		Car car = this.carRepository.findById(updateRentalRequest.getCarId());
 
-		calculateTotalPrice(updateToRental, car);
+		calculateTotalPrice(updateToRental, carService.getCarById(updateRentalRequest.getCarId()));
 		this.rentalRepository.save(updateToRental);
 		return new SuccessResult("RENTAL.UPDATED");
 	}
@@ -107,12 +104,12 @@ public class RentalManager implements RentalService {
 		checkIfExistRentalId(updateRentalRequest.getId());
 		checkIfExistCarId(updateRentalRequest.getCarId());
 		checkIfExistCorporateCustomer(updateRentalRequest.getCustomerId());
-		checkIfAvailableState(updateRentalRequest.getCarId());
+		checkIfCarAlreadyRented(updateRentalRequest.getCarId());
+		checkIfExistCarInMaintenance(updateRentalRequest.getCarId());
 
 		Rental updateToRental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
-		Car car = this.carRepository.findById(updateRentalRequest.getCarId());
 
-		calculateTotalPrice(updateToRental, car);
+		calculateTotalPrice(updateToRental, carService.getCarById(updateRentalRequest.getCarId()));
 		this.rentalRepository.save(updateToRental);
 		return new SuccessResult("RENTAL.UPDATED");
 	}
@@ -166,13 +163,30 @@ public class RentalManager implements RentalService {
 		rental.setTotalPrice(totalPrice);
 	}
 
-	private void checkIfAvailableState(int id) {
-		Car currentCar = this.carRepository.findById(id);
-		if (currentCar.getState() == 1) {
-			currentCar.setState(3);
-		} else {
-			throw new BusinessException("NOT.AVAILABLE.STATE");
-		}
+
+
+	private int checkState(int carId) {
+		checkIfExistCarId(carId);
+		return carService.getCarById(carId).getState();
+
+	}
+
+	private void checkIfExistCarInMaintenance(int carId) {
+		int state = checkState(carId);
+		if (state == 2)
+			throw new BusinessException("CAR.IN.MAINTENANCE");
+
+	}
+
+	private void checkIfCarAlreadyRented(int carId) {
+		int state = checkState(carId);
+		if (state == 3)
+			throw new BusinessException("CAR.IS.ALREADY.RENTED");
+	}
+
+	private void setStateAsRented(int carId) {
+		checkIfExistCarId(carId);
+		carService.getCarById(carId).setState(3);
 	}
 
 	private boolean checkFindeksMinValue(int carId, int customerId) {
@@ -190,13 +204,13 @@ public class RentalManager implements RentalService {
 	}
 
 	private String getNationalIdentificationOfIndividualCustomer(int customerId) {
-		String nationalIdentification = individualCustomerRepository.findById(customerId).getNationalIdentification();
+		String nationalIdentification = individualCustomerService.getIndividualCustomerById(customerId).getNationalIdentification();
 		return nationalIdentification;
 	}
 
 	private int getMinFindexScoreOfCar(int carId) {
 		checkIfExistCarId(carId);
-		return carRepository.findById(carId).getMinFindeksScore();
+		return carService.getCarById(carId).getMinFindeksScore();
 	}
 
 	private void checkIfExistRentalId(int id) {
@@ -207,23 +221,30 @@ public class RentalManager implements RentalService {
 	}
 
 	private void checkIfExistCarId(int id) {
-		Car currentCar = this.carRepository.findById(id);
-		if (currentCar == null) {
+
+		if (!carService.getById(id).isSuccess()) {
 			throw new BusinessException("INVALID.CAR.ID");
 		}
 	}
 
 	private void checkIfExistIndividualCustomer(int individualId) {
-		IndividualCustomer currentCustomer = this.individualCustomerRepository.findById(individualId);
-		if (currentCustomer == null) {
+		
+		if (!individualCustomerService.getById(individualId).isSuccess()) {
 			throw new BusinessException("INVALID.INDIVIDUAL.CUSTOMER");
 		}
 	}
 
 	private void checkIfExistCorporateCustomer(int corporateId) {
-		CorporateCustomer currentCustomer = this.corporateCustomerRepository.findById(corporateId);
-		if (currentCustomer == null) {
+		
+		if (!corporateCustomerSrvice.getById(corporateId).isSuccess()) {
 			throw new BusinessException("INVALID.CORPORATE.CUSTOMER");
 		}
+	}
+	
+
+	@Override
+	public Rental getRentalById(int rentalId) {
+		checkIfExistRentalId(rentalId);
+		return this.rentalRepository.findById(rentalId);
 	}
 }

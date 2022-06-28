@@ -10,6 +10,7 @@ import com.kodlamaio.rentACar.business.responses.individualCustomers.GetAllIndiv
 import com.kodlamaio.rentACar.business.responses.individualCustomers.ReadIndividualCustomerResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
+import com.kodlamaio.rentACar.entities.concretes.IndividualCustomer;
 
 public interface IndividualCustomerService {
 
@@ -25,4 +26,6 @@ public interface IndividualCustomerService {
 	DataResult<List<GetAllIndividualCustomersResponse>> getAll(int pageNumber, int pageSize);
 
 	DataResult<ReadIndividualCustomerResponse> getById(int id);
+	
+	IndividualCustomer getIndividualCustomerById(int id);
 }

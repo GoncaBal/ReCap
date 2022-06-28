@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kodlamaio.rentACar.business.abstracts.InvoiceService;
 import com.kodlamaio.rentACar.business.requests.invoices.CreateInvoiceRequest;
 import com.kodlamaio.rentACar.business.requests.invoices.DeleteInvoiceRequest;
-import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesResponse;
+import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesForIndividualResponse;
 import com.kodlamaio.rentACar.business.responses.invoices.ReadInvoiceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -28,9 +28,13 @@ public class InvoicesController {
 		this.invoiceService = invoiceService;
 	}
 
-	@PostMapping("/add")
-	public Result add(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
-		return this.invoiceService.add(createInvoiceRequest);
+	@PostMapping("/addforindividualcustomer")
+	public Result addForIndividualCustomer(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+		return this.invoiceService.addForIndividualCustomer(createInvoiceRequest);
+	}
+	@PostMapping("/addforcorporatecustomer")
+	public Result addForCorporateCustomer(@RequestBody CreateInvoiceRequest createInvoiceRequest) {
+		return this.invoiceService.addForCorporateCustomer(createInvoiceRequest);
 	}
 
 	@PostMapping("/delete")
@@ -38,9 +42,14 @@ public class InvoicesController {
 		return this.invoiceService.delete(deleteInvoiceRequest);
 	}
 
-	@GetMapping("/getall")
-	public DataResult<List<GetAllInvoicesResponse>> getAll() {
-		return this.invoiceService.getAll();
+	@GetMapping("/getallbyindividual")
+	public DataResult<List<GetAllInvoicesForIndividualResponse>> getAllByIndividual() {
+		return this.invoiceService.getAllByIndividual();
+	}
+	
+	@GetMapping("/getallbycorporate")
+	public DataResult<List<GetAllInvoicesForIndividualResponse>> getAllByCorporate() {
+		return this.invoiceService.getAllByIndividual();
 	}
 
 	@GetMapping("/getalladditionalitem")

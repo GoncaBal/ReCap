@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.kodlamaio.rentACar.business.abstracts.FindeksScoreCheckService;
 import com.kodlamaio.rentACar.business.abstracts.IndividualCustomerService;
 import com.kodlamaio.rentACar.business.abstracts.PersonCheckService;
 import com.kodlamaio.rentACar.business.requests.individualCustomers.CreateIndividualCustomerRequest;
@@ -32,17 +31,15 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 	ModelMapperService modelMapperService;
 	IndividualCustomerRepository individualCustomerRepository;
 	PersonCheckService personCheckService;
-	FindeksScoreCheckService findeksScoreCheckService;
 	
 
 	@Autowired
 	public IndividualCustomerManager(ModelMapperService modelMapperService,
-			IndividualCustomerRepository individualCustomerRepository, PersonCheckService personCheckService,FindeksScoreCheckService findeksScoreCheckService) {
+			IndividualCustomerRepository individualCustomerRepository, PersonCheckService personCheckService) {
 
 		this.modelMapperService = modelMapperService;
 		this.individualCustomerRepository = individualCustomerRepository;
 		this.personCheckService = personCheckService;
-		this.findeksScoreCheckService=findeksScoreCheckService;
 	}
 
 	@Override
@@ -167,6 +164,12 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 		if (!currentIndividualCustomer.getEmail().equals(email)) {
 			checkIfCustomerExistByeMail(email);
 		}
+	}
+
+	@Override
+	public IndividualCustomer getIndividualCustomerById(int id) {
+		checkIfExistIndividualCustomerId(id);
+		return this.individualCustomerRepository.findById(id);
 	}
 
 
