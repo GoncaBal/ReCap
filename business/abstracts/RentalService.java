@@ -28,4 +28,6 @@ public interface RentalService {
 	DataResult<ReadRentalResponse> getById(int id);
 
 	Rental getRentalById(int rentalId);
+	
+	
 }

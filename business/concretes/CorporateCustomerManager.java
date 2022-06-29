@@ -26,8 +26,8 @@ import com.kodlamaio.rentACar.entities.concretes.CorporateCustomer;
 @Service
 public class CorporateCustomerManager implements CorporateCustomerService{
 
-	ModelMapperService modelMapperService;
-	CorporateCustomerRepository corporateCustomerRepository;
+	private ModelMapperService modelMapperService;
+	private CorporateCustomerRepository corporateCustomerRepository;
 	
 	@Autowired
 	public CorporateCustomerManager(ModelMapperService modelMapperService,

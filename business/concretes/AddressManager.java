@@ -30,7 +30,6 @@ public class AddressManager implements AddressService {
 
 	private AddressRepository addressRepository;
 	private ModelMapperService modelMapperService;
-
 	private CustomerRepository customerRepository;
 
 	@Autowired

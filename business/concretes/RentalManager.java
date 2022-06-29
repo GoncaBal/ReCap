@@ -247,4 +247,6 @@ public class RentalManager implements RentalService {
 		checkIfExistRentalId(rentalId);
 		return this.rentalRepository.findById(rentalId);
 	}
+
+	
 }

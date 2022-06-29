@@ -152,4 +152,15 @@ public class OrderedAdditionalItemsManager implements OrderedAdditionalItemsServ
 		return this.orderedAdditionalItemsRepository.findById(orderedAdditionalId);
 	}
 
+
+	
+
+	@Override
+	public List<OrderedAdditionalItems> getByRentalId(int rentalId) {
+		checkIfExistRentalId(rentalId);
+		List<OrderedAdditionalItems> orderedAdditionalItems = this.orderedAdditionalItemsRepository.findByRentalId(rentalId);
+		return orderedAdditionalItems;
+		
+	}
+
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kodlamaio.rentACar.business.abstracts.InvoiceService;
 import com.kodlamaio.rentACar.business.requests.invoices.CreateInvoiceRequest;
 import com.kodlamaio.rentACar.business.requests.invoices.DeleteInvoiceRequest;
-import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesForIndividualResponse;
+import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesResponse;
 import com.kodlamaio.rentACar.business.responses.invoices.ReadInvoiceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -42,15 +42,12 @@ public class InvoicesController {
 		return this.invoiceService.delete(deleteInvoiceRequest);
 	}
 
-	@GetMapping("/getallbyindividual")
-	public DataResult<List<GetAllInvoicesForIndividualResponse>> getAllByIndividual() {
-		return this.invoiceService.getAllByIndividual();
+	@GetMapping("/getall")
+	public DataResult<List<GetAllInvoicesResponse>> getAll() {
+		return this.invoiceService.getAll();
 	}
 	
-	@GetMapping("/getallbycorporate")
-	public DataResult<List<GetAllInvoicesForIndividualResponse>> getAllByCorporate() {
-		return this.invoiceService.getAllByIndividual();
-	}
+	
 
 	@GetMapping("/getalladditionalitem")
 	public DataResult<List<AdditionalItem>> getAllAdditionalItem(@RequestParam int rentalId) {

@@ -12,7 +12,7 @@ import com.kodlamaio.rentACar.core.utilities.results.Result;
 import com.kodlamaio.rentACar.entities.concretes.Color;
 
 public interface ColorService {
-	
+
 	Result add(CreateColorRequest createColorRequest);
 
 	Result delete(DeleteColorRequest deleteColorRequest);
@@ -22,6 +22,6 @@ public interface ColorService {
 	DataResult<List<GetAllColorsResponse>> getAll();
 
 	DataResult<ReadColorResponse> getById(int id);
-	
-	public Color getColorById(int colorId);
+
+	Color getColorById(int colorId);
 }

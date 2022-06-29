@@ -28,9 +28,9 @@ import com.kodlamaio.rentACar.entities.concretes.IndividualCustomer;
 @Service
 public class IndividualCustomerManager implements IndividualCustomerService {
 
-	ModelMapperService modelMapperService;
-	IndividualCustomerRepository individualCustomerRepository;
-	PersonCheckService personCheckService;
+	private ModelMapperService modelMapperService;
+	private IndividualCustomerRepository individualCustomerRepository;
+	private PersonCheckService personCheckService;
 	
 
 	@Autowired

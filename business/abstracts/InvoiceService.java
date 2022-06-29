@@ -4,8 +4,7 @@ import java.util.List;
 
 import com.kodlamaio.rentACar.business.requests.invoices.CreateInvoiceRequest;
 import com.kodlamaio.rentACar.business.requests.invoices.DeleteInvoiceRequest;
-import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesForCorporateResponse;
-import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesForIndividualResponse;
+import com.kodlamaio.rentACar.business.responses.invoices.GetAllInvoicesResponse;
 import com.kodlamaio.rentACar.business.responses.invoices.ReadInvoiceResponse;
 import com.kodlamaio.rentACar.core.utilities.results.DataResult;
 import com.kodlamaio.rentACar.core.utilities.results.Result;
@@ -19,9 +18,7 @@ public interface InvoiceService {
 	
 	Result delete(DeleteInvoiceRequest deleteInvoiceRequest);
 
-	DataResult<List<GetAllInvoicesForIndividualResponse>> getAllByIndividual();
-
-	DataResult<List<GetAllInvoicesForCorporateResponse>> getAllByCorporate();
+	DataResult<List<GetAllInvoicesResponse>> getAll();
 	
 	DataResult<ReadInvoiceResponse> getById(int id);
 

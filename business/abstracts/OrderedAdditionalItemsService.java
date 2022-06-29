@@ -24,6 +24,9 @@ public interface OrderedAdditionalItemsService {
 	DataResult<ReadOrderedAdditionalItemsResponse> getById(int id);
 
 	OrderedAdditionalItems getOrderedAdditionalItemById(int orderedAdditionalId);
-//	List<OrderedAdditionalItems> getByRentalId(int orderedAdditionalId);
+
+	
+	List<OrderedAdditionalItems> getByRentalId(int rentalId);
+
 	
 }
